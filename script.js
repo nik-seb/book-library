@@ -4,8 +4,6 @@
 //    so I can have it automatically parse dashes for the URLs/no dashes for display
 // or figure out if I can have files with %20 as spaces or if spaces be auto parsed that way????
 
-// change tracked storage from title to id number
-
 // add filtering feature
 
 //------- SITE LIBRARY MANAGEMENT -------//
@@ -36,6 +34,15 @@ let id3 = new libraryEntry('Pride and Prejudice', 'Jane Austen', 'id3',
  1813, 61, 124713)
 let id4 = new libraryEntry('The Picture of Dorian Gray', 'Oscar Wilde', 'id4', 'A classic philosophical novel', 1891, 20, 65105)
 
+//to use when creating blurbs so URL is correctly formatted
+function getURL (work) {
+    let title = work.title.toLowerCase()
+    let URL = title.replaceAll(' ', '-')
+    return URL
+}
+
+//-------BROWSING---------//
+
 if (document.getElementById('browse')) {
     populateBrowse()
 }
@@ -57,6 +64,7 @@ function createBlurb (currentBook) {
     let currentYear = currentBook.year
     let currentChap = currentBook.chap
     let currentWC = currentBook.wc
+    let currentURL = getURL(currentBook)
         // create new book blurb
     let newBlurb = document.createElement('div')
     newBlurb.className = 'blurb'
@@ -64,7 +72,7 @@ function createBlurb (currentBook) {
     let newBasics = document.createElement('div')
     newBasics.className = 'book-basics'
     let newTitle = document.createElement('h2')
-    newTitle.innerHTML = `<a href="books/${currentTitle}.html">${currentTitle}</a>`
+    newTitle.innerHTML = `<a href="books/${currentURL}.html">${currentTitle}</a>`
     newBasics.appendChild(newTitle)
     let newAuthor = document.createElement('h3')
     newAuthor.innerHTML = currentAuthor
@@ -106,7 +114,7 @@ if (sessionStorage.getItem('library')) {
 let getLibrary = sessionStorage.getItem('library')
 
 
-//-------PERSONAL LIBRARY MANAGEMENT ---------//
+//-------PERSONAL LIBRARY ---------//
 
 if (document.getElementById('my-library')) {
     populateLibrary()
@@ -121,6 +129,22 @@ function populateLibrary () {
         console.log(thisWork)
         createBlurb(thisWork)
     }
+}
+
+//----------BOOK PAGES-----------//
+
+//note: when 
+
+if (document.getElementById('book-head')) {
+    console.log('populating!')
+    populateBook()
+}
+
+function populateBook () {
+    let thisID = document.querySelector('.book-id').id
+    let thisIndex = fullLibrary.findIndex((item) => item.id === thisID)
+    let thisWork = fullLibrary[thisIndex]
+    createBlurb(thisWork)
 }
 
 //------- BOOKMARKING FUNCTIONALITY --------//
