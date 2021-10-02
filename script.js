@@ -1,10 +1,12 @@
 
 //TO-DO:
-// ideally figure out some kind of replace function on URLs
-//    so I can have it automatically parse dashes for the URLs/no dashes for display
-// or figure out if I can have files with %20 as spaces or if spaces be auto parsed that way????
+    //figure out where/how to indicate names that are particularly long - might be different in URL vs title page
+        //could potentially split for URL. so class contains full name, then URL cuts off past a certain length
+
 
 // add filtering feature
+
+// add skinning options for CSS (remember to use variables)
 
 //------- SITE LIBRARY MANAGEMENT -------//
 
