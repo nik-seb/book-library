@@ -4,6 +4,10 @@
 //    so I can have it automatically parse dashes for the URLs/no dashes for display
 // or figure out if I can have files with %20 as spaces or if spaces be auto parsed that way????
 
+// change tracked storage from title to id number
+
+// add filtering feature
+
 //------- SITE LIBRARY MANAGEMENT -------//
 
 const fullLibrary = []
@@ -21,15 +25,16 @@ let libraryEntry = class {
     }
 }
 
-let id1 = new libraryEntry('Dracula', 'Bram Stoker', 1,
+let id1 = new libraryEntry('Dracula', 'Bram Stoker', 'id1',
 'The classic vampire novel.',
 1897, 27, 161774)
-let id2 = new libraryEntry('Moby Dick', 'Herman Melville', 2,
+let id2 = new libraryEntry('Moby Dick', 'Herman Melville', 'id2',
 "Call me Ishmael. Some years ago—never mind how long precisely—having little or no money in my purse, and nothing particular to interest me on shore, I thought I would sail about a little and see the watery part of the world.",
 1851, 135, 206052)
-let id3 = new libraryEntry('Pride and Prejudice', 'Jane Austen', 3,
+let id3 = new libraryEntry('Pride and Prejudice', 'Jane Austen', 'id3',
 "It is a truth universally acknowledged, that a single man in possession of a good fortune, must be in want of a wife. <br> However little known the feelings or views of such a man may be on his first entering a neighbourhood, this truth is so well fixed in the minds of the surrounding families, that he is considered as the rightful property of some one or other of their daughters.",
  1813, 61, 124713)
+let id4 = new libraryEntry('The Picture of Dorian Gray', 'Oscar Wilde', 'id4', 'A classic philosophical novel', 1891, 20, 65105)
 
 if (document.getElementById('browse')) {
     populateBrowse()
@@ -37,58 +42,58 @@ if (document.getElementById('browse')) {
 
 
 function populateBrowse () {
-    const blurbSpace = document.querySelector('.blurb-space')
     for (let i = 0; i < fullLibrary.length; i++) {
-        // get properties of current book object
-        let currentTitle = fullLibrary[i].title
-        let currentAuthor = fullLibrary[i].author
-        let currentID = fullLibrary[i].id
-        let currentSumm = fullLibrary[i].summ
-        let currentYear = fullLibrary[i].year
-        let currentChap = fullLibrary[i].chap
-        let currentWC = fullLibrary[i].wc
-        // create new book blurb
-        let newBlurb = document.createElement('div')
-        newBlurb.className = 'blurb'
-        newBlurb.id = `id${currentID}`
-        let newBasics = document.createElement('div')
-        newBasics.className = 'book-basics'
-        let newTitle = document.createElement('h2')
-        newTitle.innerHTML = `<a href="books/${currentTitle}.html">${currentTitle}</a>`
-        newBasics.appendChild(newTitle)
-        let newAuthor = document.createElement('h3')
-        newAuthor.innerHTML = currentAuthor
-        newBasics.appendChild(newAuthor)
-        newBlurb.appendChild(newBasics)
-        let newSumm = document.createElement('div')
-        newSumm.innerHTML = `<p>${currentSumm}</p>`
-        newSumm.className = 'summary'
-        newBlurb.appendChild(newSumm)
-        let newMeta = document.createElement('div')
-        newMeta.className = 'meta'
-        newBlurb.appendChild(newMeta)
-        let newYear = document.createElement('p')
-        newYear.innerHTML = `Year: <span class='year'>${currentYear}</span>`
-        newMeta.appendChild(newYear)
-        let newChap = document.createElement('p')
-        newChap.innerHTML = `Chapters: <span class='chapters'>${currentChap}</span>`
-        newMeta.appendChild(newChap)
-        let newWC = document.createElement('p')
-        newWC.innerHTML = `Words: <span class='wc'>${currentWC.toLocaleString()}</span>`
-        newMeta.appendChild(newWC)
-        let newActions = document.createElement('div')
-        newActions.className = 'actions'
-        newActions.innerHTML = `<span class='bookmark'></span>`
-        newBlurb.appendChild(newActions)
-        blurbSpace.appendChild(newBlurb)
+        createBlurb(fullLibrary[i])
     }
 }
 
-//------- BOOKMARKING FUNCTIONALITY --------//
+function createBlurb (currentBook) {
+    const blurbSpace = document.querySelector('.blurb-space')
+        // get properties of current book object
+    let currentTitle = currentBook.title
+    let currentAuthor = currentBook.author
+    let currentID = currentBook.id
+    let currentSumm = currentBook.summ
+    let currentYear = currentBook.year
+    let currentChap = currentBook.chap
+    let currentWC = currentBook.wc
+        // create new book blurb
+    let newBlurb = document.createElement('div')
+    newBlurb.className = 'blurb'
+    newBlurb.id = currentID
+    let newBasics = document.createElement('div')
+    newBasics.className = 'book-basics'
+    let newTitle = document.createElement('h2')
+    newTitle.innerHTML = `<a href="books/${currentTitle}.html">${currentTitle}</a>`
+    newBasics.appendChild(newTitle)
+    let newAuthor = document.createElement('h3')
+    newAuthor.innerHTML = currentAuthor
+    newBasics.appendChild(newAuthor)
+    newBlurb.appendChild(newBasics)
+    let newSumm = document.createElement('div')
+    newSumm.innerHTML = `<p>${currentSumm}</p>`
+    newSumm.className = 'summary'
+    newBlurb.appendChild(newSumm)
+    let newMeta = document.createElement('div')
+    newMeta.className = 'meta'
+    newBlurb.appendChild(newMeta)
+    let newYear = document.createElement('p')
+    newYear.innerHTML = `Year: <span class='year'>${currentYear}</span>`
+    newMeta.appendChild(newYear)
+    let newChap = document.createElement('p')
+    newChap.innerHTML = `Chapters: <span class='chapters'>${currentChap}</span>`
+    newMeta.appendChild(newChap)
+    let newWC = document.createElement('p')
+    newWC.innerHTML = `Words: <span class='wc'>${currentWC.toLocaleString()}</span>`
+    newMeta.appendChild(newWC)
+    let newActions = document.createElement('div')
+    newActions.className = 'actions'
+    newActions.innerHTML = `<span class='bookmark'></span>`
+    newBlurb.appendChild(newActions)
+    blurbSpace.appendChild(newBlurb)
+}
 
-const bookmarks = document.querySelectorAll('.actions span')
-//NOTE this must be placed AFTER the book blurb creation script
-// otherwise it will not have the newly created blurbs in its node list and bookmark scripts won't function
+//------INITIALIZE LIBRARY-------//
 
 let library = []
 
@@ -100,10 +105,34 @@ if (sessionStorage.getItem('library')) {
 
 let getLibrary = sessionStorage.getItem('library')
 
+
+//-------PERSONAL LIBRARY MANAGEMENT ---------//
+
+if (document.getElementById('my-library')) {
+    populateLibrary()
+}
+
+function populateLibrary () {
+    library = JSON.parse(sessionStorage.getItem('library'))
+    for (let i = 0; i < library.length; i++) {
+        let thisIndex = fullLibrary.findIndex((item) => item.id === library[i])
+        console.log(thisIndex)
+        let thisWork = fullLibrary[thisIndex]
+        console.log(thisWork)
+        createBlurb(thisWork)
+    }
+}
+
+//------- BOOKMARKING FUNCTIONALITY --------//
+
+const bookmarks = document.querySelectorAll('.actions span')
+//NOTE this must be placed AFTER the blurb creation script
+// otherwise it will not have the newly created blurbs in its node list and bookmark scripts won't function
+
 bookmarks.forEach((bookmark) => {
-    let currentTitle = bookmark.parentNode.parentNode.querySelector('h2').innerText
-    console.log(currentTitle)
-    if (getLibrary.includes(currentTitle)) {
+    let currentWork = bookmark.parentNode.parentNode.id
+    console.log(currentWork)
+    if (getLibrary.includes(currentWork)) {
         bookmark.className = 'bookmark-fill'
     }
 })
@@ -111,13 +140,13 @@ bookmarks.forEach((bookmark) => {
 bookmarks.forEach((bookmark) => {
     bookmark.addEventListener('click', function (e) {
         e.preventDefault
-        let currentTitle = this.parentNode.parentNode.querySelector('h2').innerText
+        let currentWork = this.parentNode.parentNode.id
         if (this.className === 'bookmark') {
             this.className = 'bookmark-fill'
-            setBookmark(currentTitle)
+            setBookmark(currentWork)
         } else if (this.className === 'bookmark-fill') {
             this.className = 'bookmark'
-            removeBookmark(currentTitle)
+            removeBookmark(currentWork)
         }
     //select innerText of h2 of parent element(book title)
     //CRIMINALLY UGLY:
@@ -144,10 +173,6 @@ function removeBookmark (work) {
     sessionStorage.setItem('library', JSON.stringify(library))
     console.log(library)
     }
-
-
-//-------PERSONAL LIBRARY ---------//
-
 
 
 
