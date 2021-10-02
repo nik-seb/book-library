@@ -1,0 +1,93 @@
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    color:black;
+    background-color:whitesmoke;
+    padding: 0px;
+    margin: 0px;
+}
+
+header {
+    background-color: grey;
+    padding: 0.3rem;
+}
+
+header a {
+    font-weight: bold;
+    color:white;
+}
+
+main {
+    padding-left: 5em;
+    padding-right: 5em;
+}
+
+#browse {
+    display:flex;
+}
+
+.blurb-space {
+    flex:3;
+    background-color: white;
+}
+
+.blurb {
+    position: relative;
+    display: flex;
+    width: 75%;
+    margin: auto;
+    margin-bottom: 1em;
+    border: 1px solid gray;
+}
+
+.blurb .book-basics {
+    flex: 2;
+    background-color: aliceblue;
+    padding:0.5em;
+}
+
+.blurb .summary {
+    flex: 4;
+    border-right: 1px dashed grey;
+    border-left: 1px dashed grey;
+    padding:0.5em;
+}
+
+.blurb .meta {
+    flex: 1.5;
+    padding:0.5em;
+}
+
+.actions {
+    position:absolute;
+    right: -85px;
+    width: 70px;
+    height: 50px;
+    padding:5px;
+    background-color: transparent;
+    display:block;
+}
+
+.blurb .meta span {
+    color:green;
+}
+
+.bookmark {
+    background-image: url('assets/bookmark-lines.png');
+    background-repeat: no-repeat;
+    background-position: center;
+    height: 51px;
+    width:51px;
+    display:block;
+}
+
+.bookmark-fill {
+    background-image: url('assets/bookmark.png');
+    background-repeat: no-repeat;
+    background-position: center;
+    height: 51px;
+    width:51px;
+    display:block;
+}
+
+
+/* icons by <div>Icons made by <a href="https://www.flaticon.com/authors/kiranshastry" title="Kiranshastry">Kiranshastry</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div> */
