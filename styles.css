@@ -116,4 +116,86 @@ a {
     color: #5d7fdc;
 }
 
+/*------- WORK PAGE FORMATTING ---------*/
+
+#book-head .blurb {
+    display:block;
+    margin: auto;
+    margin-top: 1em;
+}
+
+#book-head .summary {
+    padding: 1em;
+    border: none;
+    border-bottom: 1px dotted gainsboro;
+}
+
+#book-head .meta p {
+    display: inline;
+    margin-right: 1em;
+}
+
+#book-head .actions {
+    right: 0px;
+    top: 5px;
+}
+
+#main-text h2 {
+    text-align: center;
+    border: 3px solid lightgrey;
+    padding: 0.5em;
+    margin-bottom: 2em;
+}
+
+#main-text {
+    padding-top: 1em;
+}
+
+.chapter {
+    padding-top: 1em;
+    padding-bottom: 1em;
+    border-bottom: 2px solid grey;
+}
+
+#main-text p + p {
+    text-indent: 1em;
+}
+
+tr {
+    border-bottom: 2px solid lightgray;
+    display: block;
+    /* if not set to block, borders won't display */
+}
+
+td:first-child {
+    border-right: 2px solid lightgray;
+    width: 20em;
+}
+
+td {
+    padding: 0.3em;
+    padding-right: 2em;
+    padding-left: 2em;
+}
+
+#toc {
+    text-align: center;
+}
+
+#toc tbody {
+    margin: auto;
+}
+
+table {
+    margin: auto;
+}
+
+.ending {
+    text-align: center;
+    margin: 2em;
+    padding: 0.5em;
+    background: gainsboro;
+}
+
+
 /* icons by <div>Icons made by <a href="https://www.flaticon.com/authors/kiranshastry" title="Kiranshastry">Kiranshastry</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div> */

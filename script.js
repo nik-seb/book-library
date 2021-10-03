@@ -2,7 +2,7 @@
 //TO-DO:
     //figure out where/how to indicate names that are particularly long - might be different in URL vs title page
         //could potentially split for URL. so class contains full name, then URL cuts off past a certain length
-
+        //also figure out what to do with punctuation like "Mr."....
 
 // add filtering feature
 // my god after all that hullaballoo I just realized I can just reorder the flexbox when filter function is run
@@ -10,6 +10,13 @@
 // oh. my god.
 
 // add skinning options for CSS (remember to use variables)
+
+//more filters; make filter box collapsible
+
+// user-created highlights and annotations
+// user ratings? add comments?
+// share excerpt to social media
+
 
 //------- SITE LIBRARY MANAGEMENT -------//
 
@@ -38,7 +45,7 @@ let id2 = new libraryEntry('Moby Dick', 'Herman', 'Melville', 'id2',
 let id3 = new libraryEntry('Pride and Prejudice', 'Jane', 'Austen', 'id3',
 "It is a truth universally acknowledged, that a single man in possession of a good fortune, must be in want of a wife. <br> However little known the feelings or views of such a man may be on his first entering a neighbourhood, this truth is so well fixed in the minds of the surrounding families, that he is considered as the rightful property of some one or other of their daughters.",
  1813, 61, 124713)
- let id4 = new libraryEntry('The Strange Case of Dr. Jekyll and Mr. Hyde', 'Robert Louis','Stevenson', 'id4', 'summary goes here', 1886, 10, 25497)
+ let id4 = new libraryEntry('The Strange Case of Dr Jekyll and Mr Hyde', 'Robert Louis','Stevenson', 'id4', 'summary goes here', 1886, 10, 25497)
  let id5 = new libraryEntry('The Picture of Dorian Gray', 'Oscar', 'Wilde', 'id5', 'A classic philosophical novel', 1891, 20, 65105)
 
 
@@ -93,14 +100,30 @@ function filterBooks (array) {
     let newSort
     if (currentSort === 'title') {
         newSort = array.sort((a, b) => {
-            return a.title < b.title ? -1 : 1;
+            return a.title < b.title ? -1 : 1
         })
     }
     if (currentSort === 'title-reverse') {
         newSort = array.sort((a, b) => {
-            return a.title > b.title ? -1 : 1;
+            return a.title > b.title ? -1 : 1
         })
     }
+    if (currentSort === 'author-surname') {
+        newSort = array.sort((a, b) => {
+            return a.authorLast < b.authorLast ? -1 : 1
+        })
+    }
+    if (currentSort === 'year-old') {
+        newSort = array.sort((a, b) => {
+            return a.year < b.year ? -1 : 1
+        })
+    }
+    if (currentSort === 'year-new') {
+        newSort = array.sort((a, b) => {
+            return a.year > b.year ? -1 : 1
+        })
+    }
+
     console.log(newSort)
     return newSort
 }
@@ -168,6 +191,10 @@ if (document.getElementById('my-library')) {
     populateLibrary()
 }
 
+//as a note, this does fire even when reopening the page via back-button.
+// if you go to a book page from your library and unbookmark the book from that page,
+    //when you hit back to your library the unbookmarked book is not loaded.
+
 function populateLibrary () {
     library = JSON.parse(sessionStorage.getItem('library'))
     for (let i = 0; i < library.length; i++) {
@@ -182,8 +209,6 @@ function populateLibrary () {
 }
 
 //----------BOOK PAGES-----------//
-
-//note: when 
 
 if (document.getElementById('book-head')) {
     console.log('populating!')
