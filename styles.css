@@ -54,10 +54,16 @@ main {
     padding: 1em;
     background: gainsboro;
     text-align: center;
+    width: 17%;
 }
 
 #view-more {
     margin-top:1em;
+}
+
+#filter-box input[type="text"]{
+    margin-bottom:1em;
+    width: 90%;
 }
 
 .blurb-space {

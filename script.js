@@ -11,11 +11,11 @@
 
 // add skinning options for CSS (remember to use variables)
 
-//more filters; make filter box collapsible
 
 // user-created highlights and annotations
 // user ratings? add comments?
 // share excerpt to social media
+
 
 
 //------- SITE LIBRARY MANAGEMENT -------//
@@ -80,21 +80,43 @@ if (document.getElementById('browse')) {
 
 if (document.getElementById('sort-by')) {
     const sortBy = document.getElementById('sort-by')
+        // looks for a change in the sort dropdown, removes and regenerates content in the correct order
     sortBy.addEventListener('change', (e) => {
         let blurbSpace = document.querySelector('.blurb-space')
         while (blurbSpace.firstChild) {
             blurbSpace.removeChild(blurbSpace.firstChild)
         }
-        let sortedLibrary = filterBooks(fullLibrary) //make sure to change this and maybe add if variable if you add filter to my-library
+        let sortedLibrary = sortBooks(fullLibrary) //make sure to change this and maybe add if variable if you add filter to my-library
         for (let i = 0; i < sortedLibrary.length; i++) {
             createBlurb(sortedLibrary[i])
         }
         enableBookmarks()
         findBookmarks()
     })
+    const viewMore = document.getElementById('view-more')
+    const moreOptions = document.getElementById('more-options')
+        // toggles visibility of additional filter options
+    viewMore.addEventListener('click', (e) => {
+        e.preventDefault()
+        if (moreOptions.className == 'hidden') {
+            moreOptions.removeAttribute('class')
+            viewMore.innerText = 'Hide additional options'
+        } else {
+            moreOptions.setAttribute('class', 'hidden')
+            viewMore.innerText = 'View more options'
+        }
+    })
+    moreOptions.addEventListener('submit', (e) => {
+        e.preventDefault()
+        if (document.getElementById('browse')) {
+            filterBooks(moreOptions)
+        }
+    })
+
+// add all filtering options
 }
 
-function filterBooks (array) {
+function sortBooks (array) {
     const sortBy = document.getElementById('sort-by')
     let currentSort = sortBy.value
     let newSort
@@ -128,8 +150,48 @@ function filterBooks (array) {
     return newSort
 }
 
+function filterBooks (moreOptions) {
+    let listSpace = document.getElementById('browse') || document.getElementById('my-library')
+    let listItems = listSpace.getElementsByClassName('blurb')
+    let fAuthor = moreOptions.querySelector('#aname').value.toLowerCase()
+    let bTitle = moreOptions.querySelector('#btitle').value.toLowerCase()
+    let minWC = moreOptions.querySelector('#min-wc').value.toLowerCase()
+    let maxWC = moreOptions.querySelector('#max-wc').value.toLowerCase()
+    
+    let searchTerms = [fAuthor, bTitle, minWC, maxWC]
+    console.log(searchTerms)
+
+    for (let i = 0; i < listItems.length; i++) {
+        for (let j = 0; j < searchTerms.length; j++) {
+            if (searchTerms[j] == undefined || searchTerms[j] == '') {
+                continue
+            }
+
+            if (searchTerms[j] == fAuthor) {
+                let blurbName = listItems[i].querySelector('h3').innerText.toLowerCase()
+                if (!blurbName.includes(fAuthor)) {
+                    console.log(blurbName)
+                    listItems[i].className+= ' hidden'
+                    console.log(listItems[i])
+                }
+            }
+            if (searchTerms[j] == bTitle) {
+                let blurbTitle = listItems[i].querySelector('h2 a').innerText.toLowerCase()
+                if (!listItems.title.includes(bTitle)) {
+                    listItems[i].className+= ' hidden'
+                    console.log(listItems[i])
+                }
+            }
+            if (searchTerms[j] == minWC) {
+                
+            }
+        }
+        
+    }
+}
+
 function populateBrowse () {
-    let sortedLibrary = filterBooks(fullLibrary)
+    let sortedLibrary = sortBooks(fullLibrary)
     for (let i = 0; i < sortedLibrary.length; i++) {
         createBlurb(sortedLibrary[i])
     }
@@ -227,10 +289,10 @@ function populateBook () {
 //------------FILTER FUNCTION
 //UNFINISHED------------//
 // if (document.getElementById('filter-box')) {
-//     filterBooks()
+//     sortBooks()
 // }
 
-// function filterBooks() {
+// function sortBooks() {
 //     const sortBy = document.getElementById('sort-by')
 //     const currentSort = sortBy.value
 // }
