@@ -17,11 +17,24 @@
     </header>
 
     <main>
-        <div class='page-info'>
-            <h1>Personal Library</h1>
-            <p>Books you've bookmarked will be saved here so you can quickly access them.</p>
+        <div id='filter-box'>
+            <label for='sort-by'>Sort by</label>
+            <select id = 'sort-by' name='sort-by'>
+                <option value='title'>Title, A-Z</option>
+                <option value='title-reverse'>Title, Z-A</option>
+                <option value='author-surname'>Author Surname</option>
+                <option value='year-new'>Year, new-old</option>
+                <option value='year-old'>Year, old-new</option>
+            </select>
+            <br>
+            <button id='view-more'>View more options</button>
         </div>
+
         <div id ='my-library'>
+            <div class='page-info'>
+                <h1>Personal Library</h1>
+                <p>Books you've bookmarked will be saved here so you can quickly access them.</p>
+            </div>
             <div class='blurb-space'>
                 
 

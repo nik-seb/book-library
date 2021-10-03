@@ -33,13 +33,31 @@ main {
     padding-right: 5em;
 }
 
-#browse {
+#browse, #my-library {
     display:flex;
     flex-direction: column;
 }
 
 .page-info {
-    margin-left:15%;
+    margin-left:8%;
+}
+
+.page-info h1 {
+    margin: 1.6rem;
+    margin-left: 0px;
+}
+
+#filter-box {
+    float: left;
+    margin: 1.6rem;
+    margin-right: 0;
+    padding: 1em;
+    background: gainsboro;
+    text-align: center;
+}
+
+#view-more {
+    margin-top:1em;
 }
 
 .blurb-space {
@@ -50,7 +68,7 @@ main {
     position: relative;
     display: flex;
     width: 75%;
-    margin-left: 15%;
+    margin-left: 8%;
     margin-bottom: 1em;
     background-color: white;
 }
