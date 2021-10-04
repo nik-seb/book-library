@@ -114,7 +114,7 @@ main {
     color:green;
 }
 
-.bookmark {
+/* .bookmark {
     background-image: url('assets/bookmark-lines.png');
     background-repeat: no-repeat;
     background-position: center;
@@ -130,6 +130,37 @@ main {
     height: 51px;
     width:51px;
     display:block;
+} */
+
+.bookmark-fill {
+    display: block;
+    background-color: black;
+    width:60px;
+    height:50px;
+    clip-path: polygon(84.00% 0.00%,24.00% 0.00%,24.00% 95.00%,54.00% 72.00%,84.00% 95.00%);
+    border-radius: 35% 25% 40% 50%;
+}
+
+.bookmark {
+    display: block;
+    background-color: black;
+    width:60px;
+    height:50px;
+    border-radius: 35% 25% 40% 50%;
+    clip-path: polygon(84.00% 0.00%,23.00% 0.00%,25.00% 5.00%,79.00% 5.00%,79.00% 85.00%,54.00% 65.00%,28.00% 85.00%,28.00% 5.00%,23.00% 0.00%,24.00% 95.00%,54.00% 72.00%,84.00% 95.00%);
+}
+
+.bookmark-click {
+    display: inline-block;
+    height: 47px;
+    width: 40px;
+    left: 17px;
+    margin: 0px;
+    background: transparent;
+    position: absolute;
+    cursor:pointer;
+    z-index: 1;
+        /* if z-index not set, will fall behind bookmark block and become unclickable when class changes to bookmark-fill */
 }
 
 .hidden {

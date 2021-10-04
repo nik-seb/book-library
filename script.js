@@ -15,6 +15,8 @@
 // user ratings? add comments?
 // share excerpt to social media
 
+//add ability to bookmark chapter or even line and jump to that point
+
 // FINISH:
 // min/max WC filters
 
@@ -273,7 +275,7 @@ function createBlurb (currentBook) {
     newMeta.appendChild(newWC)
     let newActions = document.createElement('div')
     newActions.className = 'actions'
-    newActions.innerHTML = `<span class='bookmark'></span>`
+    newActions.innerHTML = `<p class='bookmark-click'></p><span class='bookmark'></span>`
     newBlurb.appendChild(newActions)
     blurbSpace.appendChild(newBlurb)
 }
@@ -350,16 +352,21 @@ function enableBookmarks () {
 }
 
 function findBookmarks () {
-    bookmarks = document.querySelectorAll('.actions span')
-    bookmarks.forEach((bookmark) => {
+    bookmarkClicks = document.querySelectorAll('.bookmark-click')
+    bookmarkClicks.forEach((bookmark) => {
         bookmark.addEventListener('click', function (e) {
             e.preventDefault
-            let currentWork = this.parentNode.parentNode.id
-            if (this.className === 'bookmark') {
-                this.className = 'bookmark-fill'
+            let currentBlurb = this.parentNode.parentNode
+            let currentWork = currentBlurb.id
+            let currentMark = currentBlurb.querySelector('.actions span')
+            console.log(currentWork, currentMark)
+            if (currentMark.className === 'bookmark') {
+                console.log('setting bookmark')
+                currentMark.className = 'bookmark-fill'
                 setBookmark(currentWork)
-            } else if (this.className === 'bookmark-fill') {
-                this.className = 'bookmark'
+            } else if (currentMark.className === 'bookmark-fill') {
+                console.log('removing bookmark')
+                currentMark.className = 'bookmark'
                 removeBookmark(currentWork)
             }
         })
