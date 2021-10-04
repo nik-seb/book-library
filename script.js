@@ -17,8 +17,7 @@
 
 //add ability to bookmark chapter or even line and jump to that point
 
-// FINISH:
-// min/max WC filters
+//add author pages:
 
 //FIX THESE BUGS:
 // when filtering browse, footer rises up with it and can become shorter than filter-box. set min height of main.
@@ -163,8 +162,9 @@ function filterBooks (moreOptions) {
     let listItems = listSpace.getElementsByClassName('blurb')
     let fAuthor = moreOptions.querySelector('#aname').value.toLowerCase()
     let bTitle = moreOptions.querySelector('#btitle').value.toLowerCase()
-    let minWC = moreOptions.querySelector('#min-wc').value.toLowerCase()
-    let maxWC = moreOptions.querySelector('#max-wc').value.toLowerCase()
+    let minWC = moreOptions.querySelector('#min-wc').value
+    let maxWC = moreOptions.querySelector('#max-wc').value
+    console.log('initial type of minwc is', typeof minWC)
     
     let searchTerms = [fAuthor, bTitle, minWC, maxWC]
     console.log(searchTerms)
@@ -198,11 +198,15 @@ function filterBooks (moreOptions) {
         })
     }
 
+
+    // this can result in 'hidden' being repeatedly added to classlist. not a problem rn but keep an eye on
     for (let i = 0; i < listItems.length; i++) {
         for (let j = 0; j < searchTerms.length; j++) {
             if (searchTerms[j] == undefined || searchTerms[j] == '') {
                 continue
             }
+            // is there a risk here that checking what search term is this way could cause false positives?
+                //for example, searchTerm[j] = 'ar' and both fauthor and btitle = ar
             if (searchTerms[j] == fAuthor) {
                 let blurbName = listItems[i].querySelector('h3').innerText.toLowerCase()
                 if (!blurbName.includes(fAuthor)) {
@@ -216,11 +220,39 @@ function filterBooks (moreOptions) {
                     listItems[i].className+= ' hidden'
                 }
             }
+            let blurbWC = listItems[i].querySelector('.wc').innerText
+            blurbWC = blurbWC.replaceAll(',', '')
+            blurbWC = +blurbWC
+            console.log('blurbWC: ', blurbWC)
             if (searchTerms[j] == minWC) {
+                let minWCNumber
+                //keep this contained so it doesn't throw errors on rerun because minWC is now a number
+                if (typeof minWC == 'string') {
+                    if (minWC.indexOf(',') != -1) {
+                        minWCNumber = minWC.replaceAll(',', '')
+                    }
+                    minWCNumber = +minWCNumber
+                }
+                console.log(minWCNumber <= blurbWC)
+                if (blurbWC < minWCNumber) {
+                    listItems[i].className+= ' hidden'
+                }
 
             }
+            if (searchTerms[j] == maxWC) {
+                let maxWCNumber
+                if (typeof maxWC == 'string') {
+                    if (maxWC.indexOf(',') != -1) {
+                        maxWCNumber = maxWC.replaceAll(',', '')   
+                    }
+                    maxWCNumber = +maxWCNumber
+                }
+                console.log(maxWCNumber >= blurbWC)
+                if (blurbWC > maxWCNumber) {
+                    listItems[i].className+= ' hidden'
+                }
+            }
         }
-        
     }
 }
 
