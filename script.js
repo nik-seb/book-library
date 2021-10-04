@@ -4,7 +4,6 @@
         //could potentially split for URL. so class contains full name, then URL cuts off past a certain length
         //also figure out what to do with punctuation like "Mr."....
 
-// add filtering feature
 // my god after all that hullaballoo I just realized I can just reorder the flexbox when filter function is run
 // I don't have to fully regenerate the page and rerun functions on bookmarks etc
 // oh. my god.
@@ -16,6 +15,12 @@
 // user ratings? add comments?
 // share excerpt to social media
 
+// FINISH:
+// min/max WC filters
+
+//FIX THESE BUGS:
+// when filtering browse, footer rises up with it and can become shorter than filter-box. set min height of main.
+// after filters are applied, clicking "search" again removes the "filtering for" line. make clearing it tied to the clear-btn and nothing else, else maybe concat?
 
 
 //------- SITE LIBRARY MANAGEMENT -------//
@@ -106,6 +111,7 @@ if (document.getElementById('sort-by')) {
             viewMore.innerText = 'View more options'
         }
     })
+        //applies search filter
     moreOptions.addEventListener('submit', (e) => {
         e.preventDefault()
         if (document.getElementById('browse')) {
@@ -161,29 +167,55 @@ function filterBooks (moreOptions) {
     let searchTerms = [fAuthor, bTitle, minWC, maxWC]
     console.log(searchTerms)
 
+    const pageInfo = document.querySelector('.page-info')
+
+        //removes any existing search term blurb; else creates a line informing of the current filters
+    if (document.getElementById('clear-btn')) {
+        let lineToRemove = pageInfo.querySelector('p')
+        lineToRemove.remove()
+    } else {
+        let filterInfo = document.createElement('p')
+        let filterInfoText = 'Filtering for: '
+        console.log('searchterms 1', searchTerms[1])
+        for (let t = 0; t < searchTerms.length; t++) {
+            console.log(searchTerms[t])
+            if (searchTerms[t]) {
+                filterInfoText = `${filterInfoText} '${searchTerms[t]}'`
+            }
+        }
+        filterInfo.innerHTML = `${filterInfoText}  <button id ='clear-btn'>Clear filters?</button>`
+        pageInfo.appendChild(filterInfo)
+            // enables button to clear filters
+        let clearButton = document.getElementById('clear-btn')
+        clearButton.addEventListener('click', (e) => {
+            e.preventDefault()
+            for (let item of listItems) {
+                item.classList.remove('hidden')
+            }
+            filterInfo.remove()
+        })
+    }
+
     for (let i = 0; i < listItems.length; i++) {
         for (let j = 0; j < searchTerms.length; j++) {
             if (searchTerms[j] == undefined || searchTerms[j] == '') {
                 continue
             }
-
             if (searchTerms[j] == fAuthor) {
                 let blurbName = listItems[i].querySelector('h3').innerText.toLowerCase()
                 if (!blurbName.includes(fAuthor)) {
                     console.log(blurbName)
                     listItems[i].className+= ' hidden'
-                    console.log(listItems[i])
                 }
             }
             if (searchTerms[j] == bTitle) {
                 let blurbTitle = listItems[i].querySelector('h2 a').innerText.toLowerCase()
-                if (!listItems.title.includes(bTitle)) {
+                if (!blurbTitle.includes(bTitle)) {
                     listItems[i].className+= ' hidden'
-                    console.log(listItems[i])
                 }
             }
             if (searchTerms[j] == minWC) {
-                
+
             }
         }
         
