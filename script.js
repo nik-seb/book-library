@@ -1,27 +1,7 @@
 
-//TO-DO:
-    //figure out where/how to indicate names that are particularly long - might be different in URL vs title page
-        //could potentially split for URL. so class contains full name, then URL cuts off past a certain length
-        //also figure out what to do with punctuation like "Mr."....
-
-// my god after all that hullaballoo I just realized I can just reorder the flexbox when filter function is run
-// I don't have to fully regenerate the page and rerun functions on bookmarks etc
-// oh. my god.
-
-// add skinning options for CSS (remember to use variables)
-
-
-// user-created highlights and annotations
+//maybe:
 // user ratings? add comments?
 // share excerpt to social media
-
-//add ability to bookmark chapter or even line and jump to that point
-
-//add author pages:
-
-//FIX THESE BUGS:
-// when filtering browse, footer rises up with it and can become shorter than filter-box. set min height of main.
-// after filters are applied, clicking "search" again removes the "filtering for" line. make clearing it tied to the clear-btn and nothing else, else maybe concat?
 
 
 //------- SITE LIBRARY MANAGEMENT -------//
@@ -343,12 +323,21 @@ if (document.getElementById('my-library')) {
 
 function populateLibrary () {
     library = JSON.parse(sessionStorage.getItem('library'))
+        //can't sort at this point, library is only ids
+    let mySortedLibrary = []
     for (let i = 0; i < library.length; i++) {
         let thisIndex = fullLibrary.findIndex((item) => item.id === library[i])
         console.log(thisIndex)
         let thisWork = fullLibrary[thisIndex]
-        console.log(thisWork)
-        createBlurb(thisWork)
+        mySortedLibrary.push(thisWork)
+    }
+    mySortedLibrary = mySortedLibrary.sort((a, b) => {
+        return a.title < b.title ? -1 : 1
+    })
+    console.log(mySortedLibrary)
+    for (let work of mySortedLibrary) {
+        console.log(work)
+        createBlurb(work)
     }
     enableBookmarks()
     findBookmarks()
