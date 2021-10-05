@@ -89,10 +89,12 @@ if (document.getElementById('sort-by')) {
         // looks for a change in the sort dropdown, removes and regenerates content in the correct order
     sortBy.addEventListener('change', (e) => {
         let blurbSpace = document.querySelector('.blurb-space')
+        let libraryToSort = getLibraryToSort()
+        let sortedLibrary = sortBooks(libraryToSort)
         while (blurbSpace.firstChild) {
             blurbSpace.removeChild(blurbSpace.firstChild)
         }
-        let sortedLibrary = sortBooks(fullLibrary) //make sure to change this and maybe add if variable if you add filter to my-library
+
         for (let i = 0; i < sortedLibrary.length; i++) {
             createBlurb(sortedLibrary[i])
         }
@@ -115,12 +117,27 @@ if (document.getElementById('sort-by')) {
         //applies search filter
     moreOptions.addEventListener('submit', (e) => {
         e.preventDefault()
-        if (document.getElementById('browse')) {
-            filterBooks(moreOptions)
+        filterBooks(moreOptions)
+    })
+}
+
+// get book blurbs from the current page that are eligible for sorting
+function getLibraryToSort () {
+    let currentLibrary = document.querySelectorAll('.blurb')
+    let libraryIDs = []
+    for (let lib = 0; lib < currentLibrary.length; lib++) {
+        libraryIDs.push(currentLibrary[lib].id)
+        console.log(currentLibrary[lib].id)
+    }
+
+    //get the actual workable object from fulllibrary instead of the node, then return it for sorting
+    let libraryToSort = fullLibrary.filter((book) => {
+        if (libraryIDs.indexOf(book.id) != -1) {
+            return true
         }
     })
-
-// add all filtering options
+    console.log(libraryToSort)
+    return libraryToSort
 }
 
 function sortBooks (array) {
@@ -170,7 +187,9 @@ function filterBooks (moreOptions) {
     console.log(searchTerms)
 
     const pageInfo = document.querySelector('.page-info')
+    // const textFields = moreOptions.querySelectorAll['input[type="select"]']
 
+    // console.log(textFields)
         //removes any existing search term blurb; else creates a line informing of the current filters
     if (document.getElementById('clear-btn')) {
         let lineToRemove = pageInfo.querySelector('p')
@@ -178,7 +197,6 @@ function filterBooks (moreOptions) {
     } else {
         let filterInfo = document.createElement('p')
         let filterInfoText = 'Filtering for: '
-        console.log('searchterms 1', searchTerms[1])
         for (let t = 0; t < searchTerms.length; t++) {
             console.log(searchTerms[t])
             if (searchTerms[t]) {
@@ -374,7 +392,6 @@ function enableBookmarks () {
     bookmarks.forEach((bookmark) => {
         let currentWork = bookmark.parentNode.parentNode.id
         let library = JSON.parse(sessionStorage.getItem('library'))
-        console.log(currentWork)
         if (library.includes(currentWork)) {
             bookmark.className = 'bookmark-fill'
         } else {
