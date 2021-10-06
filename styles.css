@@ -226,6 +226,21 @@ a {
     border-bottom: 2px solid grey;
 }
 
+.mark {
+    height: 30px;
+    width: 30px;
+    background-color: lightgrey;
+    float: right;
+}
+
+.mark.active {
+    height: 30px;
+    width: 30px;
+    background-color: yellowgreen;
+    float: right;
+}
+
+/*indent paras following paras */
 #main-text p + p {
     text-indent: 1em;
 }

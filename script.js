@@ -365,6 +365,67 @@ function populateBook () {
     findBookmarks()
 }
 
+// let currentMarks = []
+
+// if (sessionStorage.getItem('currentMarks')) {
+//     currentMarks = JSON.parse(sessionStorage.getItem('currentMarks'))
+// } else {
+//     sessionStorage.setItem('currentMarks', JSON.stringify('currentMarks'))
+// }
+
+// let getLibrary = sessionStorage.getItem('library')
+
+if (document.getElementById('main-text')) {
+    addMarks()
+    checkMarks()
+}
+
+function addMarks () {
+    const chapHeadings = document.querySelectorAll('.chapter h2')
+    chapHeadings.forEach((head) => {
+        head.innerHTML +=  "<span class='mark'></span>"
+    })
+}
+
+function checkMarks () {
+    const marks = document.querySelectorAll('.mark')
+    marks.forEach((mark) => {
+        mark.addEventListener('click', (e) => {
+            console.log(e.target)
+            let thisLink = e.target.parentNode.querySelector('a')
+            if (e.target.className === 'mark') {
+                e.target.className += ' active'
+                // changeMarkTOC('add', thisLink.id)
+
+            } else if (e.target.className === "mark active") {
+                e.target.classList.remove('active')
+                // changeMarkTOC('remove', thisLink.id)
+            }
+        }
+        )
+    })
+}
+
+// function changeMarkTOC (action, id) {
+//     // eligible actions are 'add' and 'remove'
+//     const rowsTOC = document.querySelectorAll ('#toc tr')
+//     let sourceLink = `#${id}`
+//     console.log(sourceLink)
+//     for (let i = 0; i < rowsTOC.length; i++) {
+//         let currentLink = rowsTOC[i].querySelector('a').getAttribute('href')
+//         if (sourceLink === currentLink && action == 'add') {
+//             console.log(currentLink)
+//             let newMark = document.createElement('td')
+//             newMark.innerHTML = '<span class="mark active"></span>'
+//             rowsTOC[i].appendChild(newMark)
+//         }
+//         if(sourceLink === currentLink && action == 'remove') {
+//             let markToRemove = rowsTOC[i].querySelector('.mark .active')
+//             rowsTOC[i].remove(markToRemove)
+//         }
+//     }
+// }
+
 //------------FILTER FUNCTION
 //UNFINISHED------------//
 // if (document.getElementById('filter-box')) {
