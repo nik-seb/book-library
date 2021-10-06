@@ -58,11 +58,8 @@ let getLibrary = sessionStorage.getItem('library')
 
 let bookmarks = document.querySelectorAll('.actions span')
 
-//-------BROWSING---------//
+//-------SORTING & FILTERING---------//
 
-if (document.getElementById('browse')) {
-    populateBrowse()
-}
 
 if (document.getElementById('sort-by')) {
     const sortBy = document.getElementById('sort-by')
@@ -174,27 +171,28 @@ function filterBooks (moreOptions) {
     if (document.getElementById('clear-btn')) {
         let lineToRemove = pageInfo.querySelector('p')
         lineToRemove.remove()
-    } else {
-        let filterInfo = document.createElement('p')
-        let filterInfoText = 'Filtering for: '
-        for (let t = 0; t < searchTerms.length; t++) {
-            console.log(searchTerms[t])
-            if (searchTerms[t]) {
-                filterInfoText = `${filterInfoText} '${searchTerms[t]}'`
-            }
-        }
-        filterInfo.innerHTML = `${filterInfoText}  <button id ='clear-btn'>Clear filters?</button>`
-        pageInfo.appendChild(filterInfo)
-            // enables button to clear filters
-        let clearButton = document.getElementById('clear-btn')
-        clearButton.addEventListener('click', (e) => {
-            e.preventDefault()
-            for (let item of listItems) {
-                item.classList.remove('hidden')
-            }
-            filterInfo.remove()
-        })
     }
+
+    let filterInfo = document.createElement('p')
+    let filterInfoText = 'Filtering for: '
+    for (let t = 0; t < searchTerms.length; t++) {
+        console.log(searchTerms[t])
+        if (searchTerms[t]) {
+            filterInfoText = `${filterInfoText} '${searchTerms[t]}'`
+        }
+    }
+    filterInfo.innerHTML = `${filterInfoText}  <button id ='clear-btn'>Clear filters?</button>`
+    pageInfo.appendChild(filterInfo)
+        // enables button to clear filters
+    let clearButton = document.getElementById('clear-btn')
+    clearButton.addEventListener('click', (e) => {
+        e.preventDefault()
+        for (let item of listItems) {
+            item.classList.remove('hidden')
+        }
+        filterInfo.remove()
+    })
+    
 
 
     // this can result in 'hidden' being repeatedly added to classlist. not a problem rn but keep an eye on
@@ -252,6 +250,12 @@ function filterBooks (moreOptions) {
             }
         }
     }
+}
+
+//----------BROWSING AND BLURB CREATION----------//
+
+if (document.getElementById('browse')) {
+    populateBrowse()
 }
 
 function populateBrowse () {
