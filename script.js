@@ -193,10 +193,12 @@ function filterBooks (moreOptions) {
         filterInfo.remove()
     })
     
+    //need to clear all "hidden" when searching, otherwise it only narrows current list
+    // maybe clear boxes when 'clear filters' clicked?
 
 
-    // this can result in 'hidden' being repeatedly added to classlist. not a problem rn but keep an eye on
     for (let i = 0; i < listItems.length; i++) {
+        listItems[i].classList.remove('hidden')
         for (let j = 0; j < searchTerms.length; j++) {
             if (searchTerms[j] == undefined || searchTerms[j] == '') {
                 continue
