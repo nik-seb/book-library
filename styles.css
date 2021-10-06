@@ -257,6 +257,7 @@ td:first-child {
 }
 
 td {
+    position: relative;
     padding: 0.3em;
     padding-right: 2em;
     padding-left: 2em;
@@ -281,5 +282,41 @@ table {
     background: gainsboro;
 }
 
+.comment-box {
+    min-height: 50px;
+    min-width: 200px;
+    background-color: whitesmoke;
+    border: 2px solid grey;
+    box-shadow: 2px 2px 3px darkgrey;
+    padding: 5px;
+    border-radius: 5px;
+
+    /* to make it stay slightly to right of container element: */
+    /* position: absolute;
+    right: -220px;
+    top: 0px; */
+
+    /* to keep it fixed and scroll with viewer:*/
+    position: fixed;
+    top: 3em;
+    right: 1em;
+}
+
+.close-btn {
+    float: right;
+    border-radius: 50%;
+    border: none;
+    width: 1.5em;
+    height: 1.5em;
+    margin: 3px;
+    padding:1px;
+    color: white;
+    background: darkgray;
+}
+
+.cmt-date {
+    font-size: smaller;
+    font-family:monospace;
+}
 
 /* icons by <div>Icons made by <a href="https://www.flaticon.com/authors/kiranshastry" title="Kiranshastry">Kiranshastry</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div> */
