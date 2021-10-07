@@ -284,7 +284,7 @@ table {
 
 .comment-box {
     min-height: 50px;
-    min-width: 200px;
+    width: 200px;
     background-color: whitesmoke;
     border: 2px solid grey;
     box-shadow: 2px 2px 3px darkgrey;
@@ -300,6 +300,7 @@ table {
     position: fixed;
     top: 3em;
     right: 1em;
+    z-index: 2;
 }
 
 .close-btn {
@@ -317,6 +318,22 @@ table {
 .cmt-date {
     font-size: smaller;
     font-family:monospace;
+}
+
+.cmt-container {
+    max-height: 5em;
+    overflow-y: auto;
+}
+
+/* below have some compatibility issues, but only way to make scrollbar perma visibile in chrome
+(as of 10/6/21 chrome autohides scrollbars and it's impossible to tell this element is scrollable without it) */
+.cmt-container::-webkit-scrollbar {
+    background-color: transparent;
+    width: 0.5em;
+}
+
+.cmt-container::-webkit-scrollbar-thumb {
+    background-color: lightgray;
 }
 
 /* icons by <div>Icons made by <a href="https://www.flaticon.com/authors/kiranshastry" title="Kiranshastry">Kiranshastry</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div> */

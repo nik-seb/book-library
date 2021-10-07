@@ -378,6 +378,8 @@ function populateBook () {
 if (document.getElementById('main-text')) {
     addMarks()
     checkMarks()
+    addNoteBtns()
+    closeNotes()
 }
 
 function addMarks () {
@@ -426,16 +428,63 @@ function changeMarkTOC (action, id) {
     }
 }
 
-//------------FILTER FUNCTION
-//UNFINISHED------------//
-// if (document.getElementById('filter-box')) {
-//     sortBooks()
-// }
+//--------COMMENT BOX--------------//
 
-// function sortBooks() {
-//     const sortBy = document.getElementById('sort-by')
-//     const currentSort = sortBy.value
-// }
+function addNoteBtns () {
+    const commentBox = document.querySelector('.comment-box')
+    const rowsTOC = document.querySelectorAll('#toc tr')
+    rowsTOC.forEach((row) => {
+        let noteBtn = document.createElement('td')
+        noteBtn.innerHTML = '<button class="note-btn">Add or view notes</button>'
+            //confirmed my suspicion that the new element must be created within the forEach function for it to be appended correctly
+        row.appendChild(noteBtn)
+    })
+    // unhide comment box and enable comment creation
+    const noteBtns = document.querySelectorAll('.note-btn') 
+    noteBtns.forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+            commentBox.classList.remove('hidden')
+        })
+    })
+    // enable saving notes
+    const saveBtn = document.querySelector('.save-btn')
+    saveBtn.addEventListener('click', (e) => {
+        createNote()
+    })
+}
+
+//adds a new note to comment-box, make sure not to call this redundantly or weird things happen
+function createNote () {
+    const commentBox = document.querySelector('.comment-box')
+    const commentText = document.querySelector('.comment-text')
+
+    let newNote = document.createElement('div')
+    newNote.className = 'comment'
+    newNote.innerHTML = "<button class='close-btn'>X</button><span class='cmt-date'></span> <p></p><hr>"
+    commentBox.appendChild(newNote)
+    let newP = newNote.querySelector('p')
+    newP.innerText = commentText.value
+    commentText.value = ''
+    let newCloseButton = newNote.querySelector('button')
+    newCloseButton.addEventListener('click', (e) => {
+        console.log('removing: ', e.target.parentNode)
+        e.target.parentNode.remove(e.target.parentNode)
+    })
+}
+
+// hide comment-box or delete note, depending on which close-button is clicked
+function closeNotes () {
+    let closeBtns = document.querySelectorAll('.close-btn')
+    closeBtns.forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+            if (btn.parentNode.className == 'comment') {
+                btn.parentNode.remove(btn.parentNode)
+            } else if (e.target.parentNode.className == 'comment-box') {
+                btn.parentNode.className += ' hidden'
+            }
+        })
+    })
+}
 
 //------- BOOKMARKING FUNCTIONALITY --------//
 
