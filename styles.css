@@ -303,6 +303,22 @@ table {
     z-index: 2;
 }
 
+.expanded.comment-box {
+    width: 80%;
+    height: 80%;
+    right: 10%;
+    overflow: hidden;
+}
+
+.expanded.cmt-container {
+    max-height: 60%;
+}
+
+.expanded.comment-text {
+    width: 95%;
+    height: 3em;
+}
+
 .close-btn {
     float: right;
     border-radius: 50%;
@@ -311,6 +327,18 @@ table {
     height: 1.5em;
     margin: 3px;
     padding:1px;
+    color: white;
+    background: darkgray;
+}
+
+.expand-btn {
+    float: left;
+    border-radius: 50%;
+    border: none;
+    width: 1.5em;
+    height: 1.5em;
+    margin: 3px;
+    padding: 1px;
     color: white;
     background: darkgray;
 }

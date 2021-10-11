@@ -380,6 +380,7 @@ if (document.getElementById('main-text')) {
     checkMarks()
     addNoteBtns()
     closeNotes()
+    expandNotes()
 }
 
 function addMarks () {
@@ -453,9 +454,32 @@ function addNoteBtns () {
     })
 }
 
+function expandNotes () {
+    const expandBtn = document.querySelector('.expand-btn')
+    const cmtBox = document.querySelector('.comment-box')
+    const cmtContainer = document.querySelector('.cmt-container')
+    const cmtTxt = document.querySelector('.comment-text')
+
+
+    //expanded on its own works, but this goes weird
+    expandBtn.addEventListener('click', (e) => {
+        if (expandBtn.innerText == '‹‹') {
+            cmtBox.className += ' expanded'
+            cmtContainer.className += ' expanded'
+            cmtTxt.className += ' expanded'
+            expandBtn.innerText = '>>'
+        } else {
+            cmtBox.classList.remove('expanded')
+            cmtContainer.classList.remove('expanded')
+            cmtTxt.classList.remove('expanded')
+            expandBtn.innerText = '‹‹'
+        }
+    })
+}
+
 //adds a new note to comment-box, make sure not to call this redundantly or weird things happen
 function createNote () {
-    const commentBox = document.querySelector('.comment-box')
+    const commentBox = document.querySelector('.cmt-container')
     const commentText = document.querySelector('.comment-text')
 
     let newNote = document.createElement('div')
@@ -468,7 +492,10 @@ function createNote () {
     let newCloseButton = newNote.querySelector('button')
     newCloseButton.addEventListener('click', (e) => {
         console.log('removing: ', e.target.parentNode)
-        e.target.parentNode.remove(e.target.parentNode)
+        let confirmation = confirm('Are you sure?')
+        if (confirmation) {
+            e.target.parentNode.remove(e.target.parentNode)
+        }
     })
 }
 
@@ -478,8 +505,11 @@ function closeNotes () {
     closeBtns.forEach((btn) => {
         btn.addEventListener('click', (e) => {
             if (btn.parentNode.className == 'comment') {
-                btn.parentNode.remove(btn.parentNode)
-            } else if (e.target.parentNode.className == 'comment-box') {
+                let confirmation = confirm('Are you sure?')
+                if (confirmation) {
+                    btn.parentNode.remove(btn.parentNode)
+                }
+            } else if (btn.parentNode.className == 'comment-box' || btn.parentNode.className == 'comment-box expanded') {
                 btn.parentNode.className += ' hidden'
             }
         })
