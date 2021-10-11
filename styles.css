@@ -214,6 +214,7 @@ a {
     border: 3px solid lightgrey;
     padding: 0.5em;
     margin-bottom: 2em;
+    position: relative;
 }
 
 #main-text {
@@ -230,14 +231,15 @@ a {
     height: 30px;
     width: 30px;
     background-color: lightgrey;
-    float: right;
+    position:absolute;
+    right: 0;
+    top: 0;
 }
 
 .mark.active {
     height: 30px;
     width: 30px;
     background-color: yellowgreen;
-    float: right;
 }
 
 /*indent paras following paras */

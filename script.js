@@ -384,7 +384,7 @@ if (document.getElementById('main-text')) {
 }
 
 function addMarks () {
-    const chapHeadings = document.querySelectorAll('.chapter h2')
+    const chapHeadings = document.querySelectorAll('#main-text h2')
     chapHeadings.forEach((head) => {
         head.innerHTML +=  "<span class='mark'></span>"
     })
@@ -476,6 +476,8 @@ function expandNotes () {
         }
     })
 }
+
+// 
 
 //adds a new note to comment-box, make sure not to call this redundantly or weird things happen
 function createNote () {

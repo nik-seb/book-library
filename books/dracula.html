@@ -2,6 +2,8 @@
 does not have chapters wrapped in divs and therefore lacks some formatting.
 could go in with a find/replace to add ending divs and new divs for each chapter -->
 
+<!-- figure what's up with the classes: letra, r, nind (eg., "Letter, Quincey P. Morris") -->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -21,7 +23,16 @@ could go in with a find/replace to add ending divs and new divs for each chapter
         <a href="../browse.html">Browse</a>
         <a href="../settings.html">Settings</a>
     </header>
-
+    <div class='comment-box hidden'>
+        <button class="expand-btn" title='Expand'>‹‹</button>
+        <button class='close-btn' title='Close'>X</button>
+        <textarea class='comment-text'></textarea><br>
+        <button class='save-btn'>Save note</button>
+        <!-- <button class='expand-notes'>Expand notes</button> -->
+        <hr>
+        <div class ='cmt-container'>
+        </div>
+    </div>
     <main>
         <div id='book-head'>
             <!-- ID below -->
