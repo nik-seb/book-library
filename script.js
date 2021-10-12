@@ -365,20 +365,18 @@ function populateBook () {
     findBookmarks()
 }
 
-// let currentMarks = []
+let currentMarks = []
 
-// if (sessionStorage.getItem('currentMarks')) {
-//     currentMarks = JSON.parse(sessionStorage.getItem('currentMarks'))
-// } else {
-//     sessionStorage.setItem('currentMarks', JSON.stringify('currentMarks'))
-// }
-
-// let getLibrary = sessionStorage.getItem('library')
+if (sessionStorage.getItem('currentMarks')) {
+    currentMarks = JSON.parse(sessionStorage.getItem('currentMarks'))
+} else {
+    sessionStorage.setItem('currentMarks', JSON.stringify(currentMarks))
+}
 
 if (document.getElementById('main-text')) {
-    addMarks()
-    checkMarks()
     addNoteBtns()
+    addMarks() //mind this order, if marks added before note btns it looks weird
+    checkMarks()
     closeNotes()
     expandNotes()
 }
@@ -392,12 +390,22 @@ function addMarks () {
 
 function checkMarks () {
     const marks = document.querySelectorAll('.mark')
+    const currentBook = document.querySelector('.book-id').id
+    console.log(currentBook)
     marks.forEach((mark) => {
+        const thisLink = mark.parentNode.querySelector('a')
+        for (let i in currentMarks) {
+            console.log(thisLink.id)
+            if (currentMarks[i].book === currentBook && currentMarks[i].chapter === thisLink.id) {
+                mark.className += ' active'
+                changeMarkTOC('add', thisLink.id)
+            }
+        }
         mark.addEventListener('click', (e) => {
-            let thisLink = e.target.parentNode.querySelector('a')
             if (e.target.className === 'mark') {
                 e.target.className += ' active'
                 changeMarkTOC('add', thisLink.id)
+                setMark('add', thisLink.id)
 
             } else if (e.target.className === "mark active") {
                 e.target.classList.remove('active')
@@ -406,6 +414,22 @@ function checkMarks () {
         }
         )
     })
+}
+
+function setMark(action, chapterID) {
+    const bookID = document.querySelector('.book-id').id
+    const marks = document.querySelectorAll('.mark')
+    console.log(bookID)
+    if (action === 'add') {
+        currentMarks.push({'book': bookID, 'chapter': chapterID})
+        sessionStorage.setItem('currentMarks', JSON.stringify(currentMarks))
+    }
+    if (action === 'remove') {
+        for (let mark of marks) {
+            let currentChap = marks[mark].parentNode.querySelector('a')
+            console.log(currentChap)
+    }
+    }    
 }
 
 function changeMarkTOC (action, id) {
@@ -430,6 +454,17 @@ function changeMarkTOC (action, id) {
 }
 
 //--------COMMENT BOX--------------//
+
+let commentStorage = []
+
+if (sessionStorage.getItem('commentStorage')) {
+    commentStorage = JSON.parse(sessionStorage.getItem('commentStorage'))
+} else {
+    sessionStorage.setItem('commentStorage', JSON.stringify(commentStorage))
+}
+
+let getComments = sessionStorage.getItem('commentStorage')
+
 
 function addNoteBtns () {
     const commentBox = document.querySelector('.comment-box')
@@ -461,7 +496,6 @@ function expandNotes () {
     const cmtTxt = document.querySelector('.comment-text')
 
 
-    //expanded on its own works, but this goes weird
     expandBtn.addEventListener('click', (e) => {
         if (expandBtn.innerText == '‹‹') {
             cmtBox.className += ' expanded'
