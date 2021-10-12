@@ -321,6 +321,14 @@ table {
     height: 3em;
 }
 
+/* the chapter label on comment boxes */
+.comment-box > span {
+    background: grey;
+    display: inline-block;
+    color: white;
+    padding: 3px;
+}
+
 .close-btn {
     float: right;
     border-radius: 50%;
@@ -347,7 +355,8 @@ table {
 
 .cmt-date {
     font-size: smaller;
-    font-family:monospace;
+    font-family: monospace;
+    display: inline;
 }
 
 .cmt-container {

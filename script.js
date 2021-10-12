@@ -420,7 +420,6 @@ function checkMarks () {
 //adds or removes marks from storage (triggered by event on h2 chapter marks)
 function setMark(action, chapterID) {
     const bookID = document.querySelector('.book-id').id
-    const marks = document.querySelectorAll('.mark')
     console.log(bookID)
     if (action === 'add') {
         currentMarks.push({'book': bookID, 'chapter': chapterID})
@@ -483,7 +482,18 @@ function addNoteBtns () {
     const noteBtns = document.querySelectorAll('.note-btn') 
     noteBtns.forEach((btn) => {
         btn.addEventListener('click', (e) => {
-            commentBox.classList.remove('hidden')
+            if (commentBox.classList.contains('hidden')) {
+                commentBox.classList.remove('hidden')
+            } else {
+                let commentHead = commentBox.querySelector('span')
+                commentBox.removeChild(commentHead)
+            }
+            let newCommentHead = document.createElement('span')
+            let btnContext = btn.parentNode.parentNode.querySelector('a')
+            let btnID = btnContext.getAttribute('href').slice(1) // the href minus #
+            newCommentHead.innerText = btnContext.innerText
+            newCommentHead.className = btnID
+            commentBox.appendChild(newCommentHead) //the chapter title
         })
     })
     // enable saving notes
@@ -519,16 +529,20 @@ function expandNotes () {
 
 //adds a new note to comment-box, make sure not to call this redundantly or weird things happen
 function createNote () {
-    const commentBox = document.querySelector('.cmt-container')
+    const commentCont = document.querySelector('.cmt-container')
     const commentText = document.querySelector('.comment-text')
+    const commentBox = document.querySelector('.comment-box')
 
     let newNote = document.createElement('div')
     newNote.className = 'comment'
-    newNote.innerHTML = "<button class='close-btn'>X</button><span class='cmt-date'></span> <p></p><hr>"
-    commentBox.appendChild(newNote)
-    let newP = newNote.querySelector('p')
+    newNote.innerHTML = "<button class='close-btn'>X</button><p class='cmt-date'></p> <p class='cmt-p'></p><hr>"
+    commentCont.appendChild(newNote)
+    let newP = newNote.querySelector('.cmt-p')
     newP.innerText = commentText.value
     commentText.value = ''
+    let newDate = newNote.querySelector('.cmt-date')
+    let date = new Date ()
+    newDate.innerText = date.toLocaleString()
     let newCloseButton = newNote.querySelector('button')
     newCloseButton.addEventListener('click', (e) => {
         console.log('removing: ', e.target.parentNode)
@@ -537,6 +551,11 @@ function createNote () {
             e.target.parentNode.remove(e.target.parentNode)
         }
     })
+
+    const bookID = document.querySelector('.book-id').id
+    const chapterID = commentBox.querySelector('span').className
+    console.log({'book': bookID, 'chapter': chapterID, 'date': newDate.innerText, 'comment': newP.innerText})
+    // commentStorage.push({'book': bookID, 'chapter': chapterID, 'date': newDate.innerText, 'comment': newP.innerText})
 }
 
 // hide comment-box or delete note, depending on which close-button is clicked
@@ -551,6 +570,8 @@ function closeNotes () {
                 }
             } else if (btn.parentNode.className == 'comment-box' || btn.parentNode.className == 'comment-box expanded') {
                 btn.parentNode.className += ' hidden'
+                let btnContext = btn.parentNode.querySelector('span')
+                btn.parentNode.removeChild(btnContext)
             }
         })
     })
