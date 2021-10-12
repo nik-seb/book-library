@@ -545,17 +545,29 @@ function createNote () {
     newDate.innerText = date.toLocaleString()
     let newCloseButton = newNote.querySelector('button')
     newCloseButton.addEventListener('click', (e) => {
-        console.log('removing: ', e.target.parentNode)
-        let confirmation = confirm('Are you sure?')
-        if (confirmation) {
-            e.target.parentNode.remove(e.target.parentNode)
-        }
+        removeNote(e.target)
     })
 
     const bookID = document.querySelector('.book-id').id
     const chapterID = commentBox.querySelector('span').className
     console.log({'book': bookID, 'chapter': chapterID, 'date': newDate.innerText, 'comment': newP.innerText})
-    // commentStorage.push({'book': bookID, 'chapter': chapterID, 'date': newDate.innerText, 'comment': newP.innerText})
+    commentStorage.push({'book': bookID, 'chapter': chapterID, 'date': newDate.innerText, 'comment': newP.innerText})
+    sessionStorage.setItem('commentStorage', JSON.stringify(commentStorage))
+}
+
+function removeNote (btn) {
+    let confirmation = confirm('Are you sure?')
+    if (confirmation) {
+        let cmtDate = btn.parentNode.querySelector('.cmt-date')
+        for (let i in commentStorage) {
+            if (commentStorage[i].date === cmtDate.innerText) {
+                console.log('splice!')
+                commentStorage.splice(i, 1)
+                sessionStorage.setItem('commentStorage', JSON.stringify(commentStorage))
+            }
+        }
+        btn.parentNode.remove(btn.parentNode)
+    }
 }
 
 // hide comment-box or delete note, depending on which close-button is clicked
@@ -564,10 +576,7 @@ function closeNotes () {
     closeBtns.forEach((btn) => {
         btn.addEventListener('click', (e) => {
             if (btn.parentNode.className == 'comment') {
-                let confirmation = confirm('Are you sure?')
-                if (confirmation) {
-                    btn.parentNode.remove(btn.parentNode)
-                }
+                removeNote(btn)
             } else if (btn.parentNode.className == 'comment-box' || btn.parentNode.className == 'comment-box expanded') {
                 btn.parentNode.className += ' hidden'
                 let btnContext = btn.parentNode.querySelector('span')
