@@ -410,12 +410,14 @@ function checkMarks () {
             } else if (e.target.className === "mark active") {
                 e.target.classList.remove('active')
                 changeMarkTOC('remove', thisLink.id)
+                setMark('remove', thisLink.id)
             }
         }
         )
     })
 }
 
+//adds or removes marks from storage (triggered by event on h2 chapter marks)
 function setMark(action, chapterID) {
     const bookID = document.querySelector('.book-id').id
     const marks = document.querySelectorAll('.mark')
@@ -425,10 +427,12 @@ function setMark(action, chapterID) {
         sessionStorage.setItem('currentMarks', JSON.stringify(currentMarks))
     }
     if (action === 'remove') {
-        for (let mark of marks) {
-            let currentChap = marks[mark].parentNode.querySelector('a')
-            console.log(currentChap)
-    }
+        for (let i in currentMarks) {
+            if (currentMarks[i].book == bookID && currentMarks[i].chapter == chapterID) {
+                currentMarks.splice(i, 1)
+                sessionStorage.setItem('currentMarks', JSON.stringify(currentMarks))
+            }
+        }
     }    
 }
 
