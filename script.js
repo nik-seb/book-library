@@ -482,6 +482,7 @@ function addNoteBtns () {
     const noteBtns = document.querySelectorAll('.note-btn') 
     noteBtns.forEach((btn) => {
         btn.addEventListener('click', (e) => {
+            //make sure commentbox is labeled with the relevant chapter and irrelevant is removed
             if (commentBox.classList.contains('hidden')) {
                 commentBox.classList.remove('hidden')
             } else {
@@ -494,14 +495,31 @@ function addNoteBtns () {
             newCommentHead.innerText = btnContext.innerText
             newCommentHead.className = btnID
             commentBox.appendChild(newCommentHead) //the chapter title
+
+            //remove any previously loaded chapter comments
+            const cmtContainer = document.querySelector('.cmt-container')            
+            let currentComments = cmtContainer.querySelectorAll('.comment')
+            currentComments.forEach((cmt) => {
+                cmtContainer.removeChild(cmt)
+            })
+
+            //load any existing comments
+            const bookID = document.querySelector('.book-id').id
+            for (let i in commentStorage) {
+                if (commentStorage[i].book === bookID && commentStorage[i].chapter === btnID) {
+                    addNote(commentStorage[i], 'load')
+                }
+            }
         })
     })
-    // enable saving notes
+    // add new comment on save
     const saveBtn = document.querySelector('.save-btn')
     saveBtn.addEventListener('click', (e) => {
-        createNote()
+        const commentText = document.querySelector('.comment-text')
+        addNote(commentText, 'create')
     })
 }
+
 
 function expandNotes () {
     const expandBtn = document.querySelector('.expand-btn')
@@ -527,10 +545,9 @@ function expandNotes () {
 
 // 
 
-//adds a new note to comment-box, make sure not to call this redundantly or weird things happen
-function createNote () {
+function addNote(entry, method) {
     const commentCont = document.querySelector('.cmt-container')
-    const commentText = document.querySelector('.comment-text')
+    // const commentText = document.querySelector('.comment-text') // entry if create
     const commentBox = document.querySelector('.comment-box')
 
     let newNote = document.createElement('div')
@@ -538,22 +555,57 @@ function createNote () {
     newNote.innerHTML = "<button class='close-btn'>X</button><p class='cmt-date'></p> <p class='cmt-p'></p><hr>"
     commentCont.appendChild(newNote)
     let newP = newNote.querySelector('.cmt-p')
-    newP.innerText = commentText.value
-    commentText.value = ''
     let newDate = newNote.querySelector('.cmt-date')
-    let date = new Date ()
-    newDate.innerText = date.toLocaleString()
+    let date
+    if (method === 'load') {
+        newP.innerText = entry.comment
+        newDate.innerText = entry.date
+    } else if (method === 'create') {
+        newP.innerText = entry.value
+        entry.value = ''
+        date = new Date ()
+        newDate.innerText = date.toLocaleString()
+    }
     let newCloseButton = newNote.querySelector('button')
     newCloseButton.addEventListener('click', (e) => {
         removeNote(e.target)
     })
-
-    const bookID = document.querySelector('.book-id').id
-    const chapterID = commentBox.querySelector('span').className
-    console.log({'book': bookID, 'chapter': chapterID, 'date': newDate.innerText, 'comment': newP.innerText})
-    commentStorage.push({'book': bookID, 'chapter': chapterID, 'date': newDate.innerText, 'comment': newP.innerText})
-    sessionStorage.setItem('commentStorage', JSON.stringify(commentStorage))
+    if (method === 'create') {
+        const bookID = document.querySelector('.book-id').id
+        const chapterID = commentBox.querySelector('span').className
+        console.log({'book': bookID, 'chapter': chapterID, 'date': newDate.innerText, 'comment': newP.innerText})
+        commentStorage.push({'book': bookID, 'chapter': chapterID, 'date': newDate.innerText, 'comment': newP.innerText})
+        sessionStorage.setItem('commentStorage', JSON.stringify(commentStorage))
+    }
 }
+
+//adds a new note to comment-box, make sure not to call this redundantly or weird things happen
+// function createNote () {
+//     const commentCont = document.querySelector('.cmt-container')
+//     const commentText = document.querySelector('.comment-text')
+//     const commentBox = document.querySelector('.comment-box')
+
+//     let newNote = document.createElement('div')
+//     newNote.className = 'comment'
+//     newNote.innerHTML = "<button class='close-btn'>X</button><p class='cmt-date'></p> <p class='cmt-p'></p><hr>"
+//     commentCont.appendChild(newNote)
+//     let newP = newNote.querySelector('.cmt-p')
+//     newP.innerText = commentText.value //
+//     commentText.value = ''
+//     let newDate = newNote.querySelector('.cmt-date')
+//     let date = new Date ()
+//     newDate.innerText = date.toLocaleString()
+//     let newCloseButton = newNote.querySelector('button')
+//     newCloseButton.addEventListener('click', (e) => {
+//         removeNote(e.target)
+//     })
+
+//     const bookID = document.querySelector('.book-id').id
+//     const chapterID = commentBox.querySelector('span').className
+//     console.log({'book': bookID, 'chapter': chapterID, 'date': newDate.innerText, 'comment': newP.innerText})
+//     commentStorage.push({'book': bookID, 'chapter': chapterID, 'date': newDate.innerText, 'comment': newP.innerText})
+//     sessionStorage.setItem('commentStorage', JSON.stringify(commentStorage))
+// }
 
 function removeNote (btn) {
     let confirmation = confirm('Are you sure?')
