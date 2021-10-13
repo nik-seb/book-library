@@ -31,8 +31,8 @@ let id2 = new libraryEntry('Moby Dick', 'Herman', 'Melville', 'id2',
 let id3 = new libraryEntry('Pride and Prejudice', 'Jane', 'Austen', 'id3',
 "It is a truth universally acknowledged, that a single man in possession of a good fortune, must be in want of a wife. <br> However little known the feelings or views of such a man may be on his first entering a neighbourhood, this truth is so well fixed in the minds of the surrounding families, that he is considered as the rightful property of some one or other of their daughters.",
  1813, 61, 124713)
- let id4 = new libraryEntry('The Strange Case of Dr Jekyll and Mr Hyde', 'Robert Louis','Stevenson', 'id4', 'summary goes here', 1886, 10, 25497)
- let id5 = new libraryEntry('The Picture of Dorian Gray', 'Oscar', 'Wilde', 'id5', 'A classic philosophical novel', 1891, 20, 65105)
+let id4 = new libraryEntry('The Strange Case of Dr Jekyll and Mr Hyde', 'Robert Louis','Stevenson', 'id4', 'summary goes here', 1886, 10, 25497)
+let id5 = new libraryEntry('The Picture of Dorian Gray', 'Oscar', 'Wilde', 'id5', 'A classic philosophical novel', 1891, 20, 65105)
 
 
 
@@ -104,7 +104,6 @@ function getLibraryToSort () {
     let libraryIDs = []
     for (let lib = 0; lib < currentLibrary.length; lib++) {
         libraryIDs.push(currentLibrary[lib].id)
-        console.log(currentLibrary[lib].id)
     }
 
     //get the actual workable object from fulllibrary instead of the node, then return it for sorting
@@ -158,7 +157,6 @@ function filterBooks (moreOptions) {
     let bTitle = moreOptions.querySelector('#btitle').value.toLowerCase()
     let minWC = moreOptions.querySelector('#min-wc').value
     let maxWC = moreOptions.querySelector('#max-wc').value
-    console.log('initial type of minwc is', typeof minWC)
     
     let searchTerms = [fAuthor, bTitle, minWC, maxWC]
     console.log(searchTerms)
@@ -333,7 +331,6 @@ function populateLibrary () {
     let mySortedLibrary = []
     for (let i = 0; i < library.length; i++) {
         let thisIndex = fullLibrary.findIndex((item) => item.id === library[i])
-        console.log(thisIndex)
         let thisWork = fullLibrary[thisIndex]
         mySortedLibrary.push(thisWork)
     }
@@ -342,7 +339,6 @@ function populateLibrary () {
     })
     console.log(mySortedLibrary)
     for (let work of mySortedLibrary) {
-        console.log(work)
         createBlurb(work)
     }
     enableBookmarks()
@@ -352,7 +348,6 @@ function populateLibrary () {
 //----------BOOK PAGES-----------//
 
 if (document.getElementById('book-head')) {
-    console.log('populating!')
     populateBook()
 }
 
@@ -401,11 +396,9 @@ function addMarks () {
 function checkMarks () {
     const marks = document.querySelectorAll('.mark')
     const currentBook = document.querySelector('.book-id').id
-    console.log(currentBook)
     marks.forEach((mark) => {
         const thisLink = mark.parentNode.querySelector('a')
         for (let i in currentMarks) {
-            // console.log(thisLink.id) //this does seem to create too many logs - 6?
             if (currentMarks[i].book === currentBook && currentMarks[i].chapter === thisLink.id) {
                 mark.className += ' active'
                 changeMarkTOC('add', thisLink.id)
@@ -478,7 +471,6 @@ function addNoteBtns () {
         let noteBtn = document.createElement('td')
             //check if any objects in comment storage match the chapter ID
         let chapSearch = commentStorage.filter((cmt) => {
-            console.log(cmt.chapter)
             if (cmt.chapter === chapterID) {
                 return true
             }
@@ -549,7 +541,7 @@ function expandNotes () {
             cmtBox.className += ' expanded'
             cmtContainer.className += ' expanded'
             cmtTxt.className += ' expanded'
-            expandBtn.innerText = '>>'
+            expandBtn.innerText = '››'
         } else {
             cmtBox.classList.remove('expanded')
             cmtContainer.classList.remove('expanded')
@@ -559,11 +551,10 @@ function expandNotes () {
     })
 }
 
-// 
 
 function addNote(entry, method) {
+    // receives either .comment-text div as entry and 'create' as method or commentStorage entry + 'load' as method
     const commentCont = document.querySelector('.cmt-container')
-    // const commentText = document.querySelector('.comment-text') // entry if create
     const commentBox = document.querySelector('.comment-box')
 
     let newNote = document.createElement('div')
@@ -586,6 +577,7 @@ function addNote(entry, method) {
     newCloseButton.addEventListener('click', (e) => {
         removeNote(e.target)
     })
+    // logs newly created notes into storage
     if (method === 'create') {
         const bookID = document.querySelector('.book-id').id
         const chapterID = commentBox.querySelector('span').className
@@ -595,11 +587,10 @@ function addNote(entry, method) {
     }
 }
 
-//OK SUDDENLY IT'S SPAWNING A MILLION COMMENTS PER COMMENT WTF
 function removeNote (btn) {
     let confirmation = confirm('Are you sure?')
     if (confirmation) {
-            //remove comment with matching timestamp from storage
+            //removes comment with matching timestamp from storage
         let cmtDate = btn.parentNode.querySelector('.cmt-date')
         for (let i in commentStorage) {
             if (commentStorage[i].date === cmtDate.innerText) {
@@ -610,15 +601,15 @@ function removeNote (btn) {
         }
         btn.parentNode.remove(btn.parentNode)
         const commentCont = document.querySelector('.cmt-container')
-        console.log(commentCont.firstChild || commentCont.hasChildNodes)
+        // if no notes for current chapter, changes the chapter's "add or view notes" button to "add a note"
         if (!commentCont.firstChild) {
-            console.log('no children')
             const matchingBtn = findChapterBtn()
             matchingBtn.innerText = 'Add a note'
         }
     }
 }
 
+// find "view notes" button in TOC that matches the chapter notes currently being viewed
 function findChapterBtn () {
     const commentCont = document.querySelector('.cmt-container')
     const thisChapter = commentCont.parentNode.querySelector('span').className
@@ -686,7 +677,6 @@ function findBookmarks () {
 
 
 function setBookmark (work) {
-        console.log('initial load is ' + library)
         library.push(work)
         sessionStorage.setItem('library', JSON.stringify(library))
         console.log('session storage is ' + JSON.parse(sessionStorage.getItem('library')))
@@ -699,36 +689,3 @@ function removeBookmark (work) {
     sessionStorage.setItem('library', JSON.stringify(library))
     console.log(library)
     }
-
-
-
-    // SUPER MESSY ATTEMPT TO INSERT COMMAS INTO LARGE NUMBERS
-// BEFORE I REALIZED THERE WAS A MUCH EASIER WAY
-// const testToSplit = '0123456789'
-// let calculatedSplit = []
-// console.log('the length', testToSplit.length/3)
-// let trip = 0
-// for (let j = 1; j <= testToSplit.length/3; j++) {
-//     trip = trip+3
-//     calculatedSplit.push(trip)
-// }
-
-// console.log(calculatedSplit)
-
-// let splitArray = []
-// for (let k = 0; k < calculatedSplit.length; k++) {
-//     let currentSplit = ''
-//     currentSplit = testToSplit.slice(-(calculatedSplit[k]), -(calculatedSplit[k])+3)
-//     console.log((-(calculatedSplit[k]), -(calculatedSplit[k])+3))
-//     console.log('currentSplit is', currentSplit)
-//     splitArray.push[currentSplit]
-//     console.log(splitArray)
-// }
-// splitArray.push(testToSplit.slice(0, testToSplit%3))
-// console.log(splitArray)
-
-// let finalSplitWC = splitArray[splitArray.length-1]
-// for (let jk = splitArray.length-2; jk >= 0; jk--) {
-//     finalSplitWc = finalSplitWC.concat(',', splitArray[jk])
-// }
-// console.log(finalSplitWC)
