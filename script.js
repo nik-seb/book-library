@@ -373,6 +373,16 @@ if (sessionStorage.getItem('currentMarks')) {
     sessionStorage.setItem('currentMarks', JSON.stringify(currentMarks))
 }
 
+let commentStorage = []
+
+if (sessionStorage.getItem('commentStorage')) {
+    commentStorage = JSON.parse(sessionStorage.getItem('commentStorage'))
+} else {
+    sessionStorage.setItem('commentStorage', JSON.stringify(commentStorage))
+}
+
+let getComments = sessionStorage.getItem('commentStorage')
+
 if (document.getElementById('main-text')) {
     addNoteBtns()
     addMarks() //mind this order, if marks added before note btns it looks weird
@@ -395,7 +405,7 @@ function checkMarks () {
     marks.forEach((mark) => {
         const thisLink = mark.parentNode.querySelector('a')
         for (let i in currentMarks) {
-            console.log(thisLink.id)
+            // console.log(thisLink.id) //this does seem to create too many logs - 6?
             if (currentMarks[i].book === currentBook && currentMarks[i].chapter === thisLink.id) {
                 mark.className += ' active'
                 changeMarkTOC('add', thisLink.id)
@@ -458,24 +468,26 @@ function changeMarkTOC (action, id) {
 
 //--------COMMENT BOX--------------//
 
-let commentStorage = []
-
-if (sessionStorage.getItem('commentStorage')) {
-    commentStorage = JSON.parse(sessionStorage.getItem('commentStorage'))
-} else {
-    sessionStorage.setItem('commentStorage', JSON.stringify(commentStorage))
-}
-
-let getComments = sessionStorage.getItem('commentStorage')
-
 
 function addNoteBtns () {
     const commentBox = document.querySelector('.comment-box')
     const rowsTOC = document.querySelectorAll('#toc tr')
     rowsTOC.forEach((row) => {
+        let chapterID = row.querySelector('a').getAttribute('href')
+        chapterID = chapterID.slice(1)
         let noteBtn = document.createElement('td')
-        noteBtn.innerHTML = '<button class="note-btn">Add or view notes</button>'
-            //confirmed my suspicion that the new element must be created within the forEach function for it to be appended correctly
+            //check if any objects in comment storage match the chapter ID
+        let chapSearch = commentStorage.filter((cmt) => {
+            console.log(cmt.chapter)
+            if (cmt.chapter === chapterID) {
+                return true
+            }
+        })
+        if (chapSearch.length > 0) {
+            noteBtn.innerHTML = '<button class="note-btn">Add or view notes</button>'
+        } else {
+            noteBtn.innerHTML = '<button class="note-btn">Add a note</button>'
+        }
         row.appendChild(noteBtn)
     })
     // unhide comment box and enable comment creation
@@ -512,11 +524,15 @@ function addNoteBtns () {
             }
         })
     })
-    // add new comment on save
+    // add new comment on save ----note this was tied into button creation but it broke it
     const saveBtn = document.querySelector('.save-btn')
     saveBtn.addEventListener('click', (e) => {
         const commentText = document.querySelector('.comment-text')
         addNote(commentText, 'create')
+        let matchingBtn = findChapterBtn()
+        if (matchingBtn.innerText === 'Add a note') {
+            matchingBtn.innerText = 'Add or view notes'
+        }
     })
 }
 
@@ -579,37 +595,11 @@ function addNote(entry, method) {
     }
 }
 
-//adds a new note to comment-box, make sure not to call this redundantly or weird things happen
-// function createNote () {
-//     const commentCont = document.querySelector('.cmt-container')
-//     const commentText = document.querySelector('.comment-text')
-//     const commentBox = document.querySelector('.comment-box')
-
-//     let newNote = document.createElement('div')
-//     newNote.className = 'comment'
-//     newNote.innerHTML = "<button class='close-btn'>X</button><p class='cmt-date'></p> <p class='cmt-p'></p><hr>"
-//     commentCont.appendChild(newNote)
-//     let newP = newNote.querySelector('.cmt-p')
-//     newP.innerText = commentText.value //
-//     commentText.value = ''
-//     let newDate = newNote.querySelector('.cmt-date')
-//     let date = new Date ()
-//     newDate.innerText = date.toLocaleString()
-//     let newCloseButton = newNote.querySelector('button')
-//     newCloseButton.addEventListener('click', (e) => {
-//         removeNote(e.target)
-//     })
-
-//     const bookID = document.querySelector('.book-id').id
-//     const chapterID = commentBox.querySelector('span').className
-//     console.log({'book': bookID, 'chapter': chapterID, 'date': newDate.innerText, 'comment': newP.innerText})
-//     commentStorage.push({'book': bookID, 'chapter': chapterID, 'date': newDate.innerText, 'comment': newP.innerText})
-//     sessionStorage.setItem('commentStorage', JSON.stringify(commentStorage))
-// }
-
+//OK SUDDENLY IT'S SPAWNING A MILLION COMMENTS PER COMMENT WTF
 function removeNote (btn) {
     let confirmation = confirm('Are you sure?')
     if (confirmation) {
+            //remove comment with matching timestamp from storage
         let cmtDate = btn.parentNode.querySelector('.cmt-date')
         for (let i in commentStorage) {
             if (commentStorage[i].date === cmtDate.innerText) {
@@ -619,7 +609,22 @@ function removeNote (btn) {
             }
         }
         btn.parentNode.remove(btn.parentNode)
+        const commentCont = document.querySelector('.cmt-container')
+        console.log(commentCont.firstChild || commentCont.hasChildNodes)
+        if (!commentCont.firstChild) {
+            console.log('no children')
+            const matchingBtn = findChapterBtn()
+            matchingBtn.innerText = 'Add a note'
+        }
     }
+}
+
+function findChapterBtn () {
+    const commentCont = document.querySelector('.cmt-container')
+    const thisChapter = commentCont.parentNode.querySelector('span').className
+    const matchingChap = document.querySelector(`a[href="#${thisChapter}"]`)
+    const matchingBtn = matchingChap.parentNode.parentNode.querySelector('.note-btn')
+    return matchingBtn
 }
 
 // hide comment-box or delete note, depending on which close-button is clicked
