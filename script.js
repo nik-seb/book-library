@@ -31,8 +31,8 @@ let id2 = new libraryEntry('Moby Dick', 'Herman', 'Melville', 'id2',
 let id3 = new libraryEntry('Pride and Prejudice', 'Jane', 'Austen', 'id3',
 "It is a truth universally acknowledged, that a single man in possession of a good fortune, must be in want of a wife. <br> However little known the feelings or views of such a man may be on his first entering a neighbourhood, this truth is so well fixed in the minds of the surrounding families, that he is considered as the rightful property of some one or other of their daughters.",
  1813, 61, 124713)
- let id4 = new libraryEntry('The Strange Case of Dr Jekyll and Mr Hyde', 'Robert Louis','Stevenson', 'id4', 'summary goes here', 1886, 10, 25497)
- let id5 = new libraryEntry('The Picture of Dorian Gray', 'Oscar', 'Wilde', 'id5', 'A classic philosophical novel', 1891, 20, 65105)
+let id4 = new libraryEntry('The Strange Case of Dr Jekyll and Mr Hyde', 'Robert Louis','Stevenson', 'id4', 'summary goes here', 1886, 10, 25497)
+let id5 = new libraryEntry('The Picture of Dorian Gray', 'Oscar', 'Wilde', 'id5', 'A classic philosophical novel', 1891, 20, 65105)
 
 
 
@@ -104,7 +104,6 @@ function getLibraryToSort () {
     let libraryIDs = []
     for (let lib = 0; lib < currentLibrary.length; lib++) {
         libraryIDs.push(currentLibrary[lib].id)
-        console.log(currentLibrary[lib].id)
     }
 
     //get the actual workable object from fulllibrary instead of the node, then return it for sorting
@@ -158,7 +157,6 @@ function filterBooks (moreOptions) {
     let bTitle = moreOptions.querySelector('#btitle').value.toLowerCase()
     let minWC = moreOptions.querySelector('#min-wc').value
     let maxWC = moreOptions.querySelector('#max-wc').value
-    console.log('initial type of minwc is', typeof minWC)
     
     let searchTerms = [fAuthor, bTitle, minWC, maxWC]
     console.log(searchTerms)
@@ -333,7 +331,6 @@ function populateLibrary () {
     let mySortedLibrary = []
     for (let i = 0; i < library.length; i++) {
         let thisIndex = fullLibrary.findIndex((item) => item.id === library[i])
-        console.log(thisIndex)
         let thisWork = fullLibrary[thisIndex]
         mySortedLibrary.push(thisWork)
     }
@@ -342,7 +339,6 @@ function populateLibrary () {
     })
     console.log(mySortedLibrary)
     for (let work of mySortedLibrary) {
-        console.log(work)
         createBlurb(work)
     }
     enableBookmarks()
@@ -352,7 +348,6 @@ function populateLibrary () {
 //----------BOOK PAGES-----------//
 
 if (document.getElementById('book-head')) {
-    console.log('populating!')
     populateBook()
 }
 
@@ -365,20 +360,28 @@ function populateBook () {
     findBookmarks()
 }
 
-// let currentMarks = []
+let currentMarks = []
 
-// if (sessionStorage.getItem('currentMarks')) {
-//     currentMarks = JSON.parse(sessionStorage.getItem('currentMarks'))
-// } else {
-//     sessionStorage.setItem('currentMarks', JSON.stringify('currentMarks'))
-// }
+if (sessionStorage.getItem('currentMarks')) {
+    currentMarks = JSON.parse(sessionStorage.getItem('currentMarks'))
+} else {
+    sessionStorage.setItem('currentMarks', JSON.stringify(currentMarks))
+}
 
-// let getLibrary = sessionStorage.getItem('library')
+let commentStorage = []
+
+if (sessionStorage.getItem('commentStorage')) {
+    commentStorage = JSON.parse(sessionStorage.getItem('commentStorage'))
+} else {
+    sessionStorage.setItem('commentStorage', JSON.stringify(commentStorage))
+}
+
+let getComments = sessionStorage.getItem('commentStorage')
 
 if (document.getElementById('main-text')) {
-    addMarks()
-    checkMarks()
     addNoteBtns()
+    addMarks() //mind this order, if marks added before note btns it looks weird
+    checkMarks()
     closeNotes()
     expandNotes()
 }
@@ -392,20 +395,47 @@ function addMarks () {
 
 function checkMarks () {
     const marks = document.querySelectorAll('.mark')
+    const currentBook = document.querySelector('.book-id').id
     marks.forEach((mark) => {
+        const thisLink = mark.parentNode.querySelector('a')
+        for (let i in currentMarks) {
+            if (currentMarks[i].book === currentBook && currentMarks[i].chapter === thisLink.id) {
+                mark.className += ' active'
+                changeMarkTOC('add', thisLink.id)
+            }
+        }
         mark.addEventListener('click', (e) => {
-            let thisLink = e.target.parentNode.querySelector('a')
             if (e.target.className === 'mark') {
                 e.target.className += ' active'
                 changeMarkTOC('add', thisLink.id)
+                setMark('add', thisLink.id)
 
             } else if (e.target.className === "mark active") {
                 e.target.classList.remove('active')
                 changeMarkTOC('remove', thisLink.id)
+                setMark('remove', thisLink.id)
             }
         }
         )
     })
+}
+
+//adds or removes marks from storage (triggered by event on h2 chapter marks)
+function setMark(action, chapterID) {
+    const bookID = document.querySelector('.book-id').id
+    console.log(bookID)
+    if (action === 'add') {
+        currentMarks.push({'book': bookID, 'chapter': chapterID})
+        sessionStorage.setItem('currentMarks', JSON.stringify(currentMarks))
+    }
+    if (action === 'remove') {
+        for (let i in currentMarks) {
+            if (currentMarks[i].book == bookID && currentMarks[i].chapter == chapterID) {
+                currentMarks.splice(i, 1)
+                sessionStorage.setItem('currentMarks', JSON.stringify(currentMarks))
+            }
+        }
+    }    
 }
 
 function changeMarkTOC (action, id) {
@@ -431,28 +461,73 @@ function changeMarkTOC (action, id) {
 
 //--------COMMENT BOX--------------//
 
+
 function addNoteBtns () {
     const commentBox = document.querySelector('.comment-box')
     const rowsTOC = document.querySelectorAll('#toc tr')
     rowsTOC.forEach((row) => {
+        let chapterID = row.querySelector('a').getAttribute('href')
+        chapterID = chapterID.slice(1)
         let noteBtn = document.createElement('td')
-        noteBtn.innerHTML = '<button class="note-btn">Add or view notes</button>'
-            //confirmed my suspicion that the new element must be created within the forEach function for it to be appended correctly
+            //check if any objects in comment storage match the chapter ID
+        let chapSearch = commentStorage.filter((cmt) => {
+            if (cmt.chapter === chapterID) {
+                return true
+            }
+        })
+        if (chapSearch.length > 0) {
+            noteBtn.innerHTML = '<button class="note-btn">Add or view notes</button>'
+        } else {
+            noteBtn.innerHTML = '<button class="note-btn">Add a note</button>'
+        }
         row.appendChild(noteBtn)
     })
     // unhide comment box and enable comment creation
     const noteBtns = document.querySelectorAll('.note-btn') 
     noteBtns.forEach((btn) => {
         btn.addEventListener('click', (e) => {
-            commentBox.classList.remove('hidden')
+            //make sure commentbox is labeled with the relevant chapter and irrelevant is removed
+            if (commentBox.classList.contains('hidden')) {
+                commentBox.classList.remove('hidden')
+            } else {
+                let commentHead = commentBox.querySelector('span')
+                commentBox.removeChild(commentHead)
+            }
+            let newCommentHead = document.createElement('span')
+            let btnContext = btn.parentNode.parentNode.querySelector('a')
+            let btnID = btnContext.getAttribute('href').slice(1) // the href minus #
+            newCommentHead.innerText = btnContext.innerText
+            newCommentHead.className = btnID
+            commentBox.appendChild(newCommentHead) //the chapter title
+
+            //remove any previously loaded chapter comments
+            const cmtContainer = document.querySelector('.cmt-container')            
+            let currentComments = cmtContainer.querySelectorAll('.comment')
+            currentComments.forEach((cmt) => {
+                cmtContainer.removeChild(cmt)
+            })
+
+            //load any existing comments
+            const bookID = document.querySelector('.book-id').id
+            for (let i in commentStorage) {
+                if (commentStorage[i].book === bookID && commentStorage[i].chapter === btnID) {
+                    addNote(commentStorage[i], 'load')
+                }
+            }
         })
     })
-    // enable saving notes
+    // add new comment on save ----note this was tied into button creation but it broke it
     const saveBtn = document.querySelector('.save-btn')
     saveBtn.addEventListener('click', (e) => {
-        createNote()
+        const commentText = document.querySelector('.comment-text')
+        addNote(commentText, 'create')
+        let matchingBtn = findChapterBtn()
+        if (matchingBtn.innerText === 'Add a note') {
+            matchingBtn.innerText = 'Add or view notes'
+        }
     })
 }
+
 
 function expandNotes () {
     const expandBtn = document.querySelector('.expand-btn')
@@ -461,13 +536,12 @@ function expandNotes () {
     const cmtTxt = document.querySelector('.comment-text')
 
 
-    //expanded on its own works, but this goes weird
     expandBtn.addEventListener('click', (e) => {
         if (expandBtn.innerText == '‹‹') {
             cmtBox.className += ' expanded'
             cmtContainer.className += ' expanded'
             cmtTxt.className += ' expanded'
-            expandBtn.innerText = '>>'
+            expandBtn.innerText = '››'
         } else {
             cmtBox.classList.remove('expanded')
             cmtContainer.classList.remove('expanded')
@@ -477,28 +551,71 @@ function expandNotes () {
     })
 }
 
-// 
 
-//adds a new note to comment-box, make sure not to call this redundantly or weird things happen
-function createNote () {
-    const commentBox = document.querySelector('.cmt-container')
-    const commentText = document.querySelector('.comment-text')
+function addNote(entry, method) {
+    // receives either .comment-text div as entry and 'create' as method or commentStorage entry + 'load' as method
+    const commentCont = document.querySelector('.cmt-container')
+    const commentBox = document.querySelector('.comment-box')
 
     let newNote = document.createElement('div')
     newNote.className = 'comment'
-    newNote.innerHTML = "<button class='close-btn'>X</button><span class='cmt-date'></span> <p></p><hr>"
-    commentBox.appendChild(newNote)
-    let newP = newNote.querySelector('p')
-    newP.innerText = commentText.value
-    commentText.value = ''
+    newNote.innerHTML = "<button class='close-btn'>X</button><p class='cmt-date'></p> <p class='cmt-p'></p><hr>"
+    commentCont.appendChild(newNote)
+    let newP = newNote.querySelector('.cmt-p')
+    let newDate = newNote.querySelector('.cmt-date')
+    let date
+    if (method === 'load') {
+        newP.innerText = entry.comment
+        newDate.innerText = entry.date
+    } else if (method === 'create') {
+        newP.innerText = entry.value
+        entry.value = ''
+        date = new Date ()
+        newDate.innerText = date.toLocaleString()
+    }
     let newCloseButton = newNote.querySelector('button')
     newCloseButton.addEventListener('click', (e) => {
-        console.log('removing: ', e.target.parentNode)
-        let confirmation = confirm('Are you sure?')
-        if (confirmation) {
-            e.target.parentNode.remove(e.target.parentNode)
-        }
+        removeNote(e.target)
     })
+    // logs newly created notes into storage
+    if (method === 'create') {
+        const bookID = document.querySelector('.book-id').id
+        const chapterID = commentBox.querySelector('span').className
+        console.log({'book': bookID, 'chapter': chapterID, 'date': newDate.innerText, 'comment': newP.innerText})
+        commentStorage.push({'book': bookID, 'chapter': chapterID, 'date': newDate.innerText, 'comment': newP.innerText})
+        sessionStorage.setItem('commentStorage', JSON.stringify(commentStorage))
+    }
+}
+
+function removeNote (btn) {
+    let confirmation = confirm('Are you sure?')
+    if (confirmation) {
+            //removes comment with matching timestamp from storage
+        let cmtDate = btn.parentNode.querySelector('.cmt-date')
+        for (let i in commentStorage) {
+            if (commentStorage[i].date === cmtDate.innerText) {
+                console.log('splice!')
+                commentStorage.splice(i, 1)
+                sessionStorage.setItem('commentStorage', JSON.stringify(commentStorage))
+            }
+        }
+        btn.parentNode.remove(btn.parentNode)
+        const commentCont = document.querySelector('.cmt-container')
+        // if no notes for current chapter, changes the chapter's "add or view notes" button to "add a note"
+        if (!commentCont.firstChild) {
+            const matchingBtn = findChapterBtn()
+            matchingBtn.innerText = 'Add a note'
+        }
+    }
+}
+
+// find "view notes" button in TOC that matches the chapter notes currently being viewed
+function findChapterBtn () {
+    const commentCont = document.querySelector('.cmt-container')
+    const thisChapter = commentCont.parentNode.querySelector('span').className
+    const matchingChap = document.querySelector(`a[href="#${thisChapter}"]`)
+    const matchingBtn = matchingChap.parentNode.parentNode.querySelector('.note-btn')
+    return matchingBtn
 }
 
 // hide comment-box or delete note, depending on which close-button is clicked
@@ -507,12 +624,11 @@ function closeNotes () {
     closeBtns.forEach((btn) => {
         btn.addEventListener('click', (e) => {
             if (btn.parentNode.className == 'comment') {
-                let confirmation = confirm('Are you sure?')
-                if (confirmation) {
-                    btn.parentNode.remove(btn.parentNode)
-                }
+                removeNote(btn)
             } else if (btn.parentNode.className == 'comment-box' || btn.parentNode.className == 'comment-box expanded') {
                 btn.parentNode.className += ' hidden'
+                let btnContext = btn.parentNode.querySelector('span')
+                btn.parentNode.removeChild(btnContext)
             }
         })
     })
@@ -561,7 +677,6 @@ function findBookmarks () {
 
 
 function setBookmark (work) {
-        console.log('initial load is ' + library)
         library.push(work)
         sessionStorage.setItem('library', JSON.stringify(library))
         console.log('session storage is ' + JSON.parse(sessionStorage.getItem('library')))
@@ -574,36 +689,3 @@ function removeBookmark (work) {
     sessionStorage.setItem('library', JSON.stringify(library))
     console.log(library)
     }
-
-
-
-    // SUPER MESSY ATTEMPT TO INSERT COMMAS INTO LARGE NUMBERS
-// BEFORE I REALIZED THERE WAS A MUCH EASIER WAY
-// const testToSplit = '0123456789'
-// let calculatedSplit = []
-// console.log('the length', testToSplit.length/3)
-// let trip = 0
-// for (let j = 1; j <= testToSplit.length/3; j++) {
-//     trip = trip+3
-//     calculatedSplit.push(trip)
-// }
-
-// console.log(calculatedSplit)
-
-// let splitArray = []
-// for (let k = 0; k < calculatedSplit.length; k++) {
-//     let currentSplit = ''
-//     currentSplit = testToSplit.slice(-(calculatedSplit[k]), -(calculatedSplit[k])+3)
-//     console.log((-(calculatedSplit[k]), -(calculatedSplit[k])+3))
-//     console.log('currentSplit is', currentSplit)
-//     splitArray.push[currentSplit]
-//     console.log(splitArray)
-// }
-// splitArray.push(testToSplit.slice(0, testToSplit%3))
-// console.log(splitArray)
-
-// let finalSplitWC = splitArray[splitArray.length-1]
-// for (let jk = splitArray.length-2; jk >= 0; jk--) {
-//     finalSplitWc = finalSplitWC.concat(',', splitArray[jk])
-// }
-// console.log(finalSplitWC)
