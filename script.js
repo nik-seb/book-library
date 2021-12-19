@@ -1,8 +1,4 @@
 
-//maybe:
-// user ratings? add comments?
-// share excerpt to social media
-
 
 //------- SITE LIBRARY MANAGEMENT -------//
 
@@ -23,16 +19,16 @@ let libraryEntry = class {
 }
 
 let id1 = new libraryEntry('Dracula', 'Bram', 'Stoker', 'id1',
-'The classic vampire novel.',
+'Working page. <br><br>The classic vampire novel.',
 1897, 27, 161774)
 let id2 = new libraryEntry('Moby Dick', 'Herman', 'Melville', 'id2',
-"Call me Ishmael. Some years ago—never mind how long precisely—having little or no money in my purse, and nothing particular to interest me on shore, I thought I would sail about a little and see the watery part of the world.",
+"Page not yet added.<br><br>\"Call me Ishmael. Some years ago—never mind how long precisely—having little or no money in my purse, and nothing particular to interest me on shore, I thought I would sail about a little and see the watery part of the world.\"",
 1851, 135, 206052)
 let id3 = new libraryEntry('Pride and Prejudice', 'Jane', 'Austen', 'id3',
-"It is a truth universally acknowledged, that a single man in possession of a good fortune, must be in want of a wife. <br> However little known the feelings or views of such a man may be on his first entering a neighbourhood, this truth is so well fixed in the minds of the surrounding families, that he is considered as the rightful property of some one or other of their daughters.",
+"Working page. <br><br>\"It is a truth universally acknowledged, that a single man in possession of a good fortune, must be in want of a wife.\"",
  1813, 61, 124713)
-let id4 = new libraryEntry('The Strange Case of Dr Jekyll and Mr Hyde', 'Robert Louis','Stevenson', 'id4', 'summary goes here', 1886, 10, 25497)
-let id5 = new libraryEntry('The Picture of Dorian Gray', 'Oscar', 'Wilde', 'id5', 'A classic philosophical novel', 1891, 20, 65105)
+let id4 = new libraryEntry('The Strange Case of Dr Jekyll and Mr Hyde', 'Robert Louis','Stevenson', 'id4', 'Page not yet added', 1886, 10, 25497)
+let id5 = new libraryEntry('The Picture of Dorian Gray', 'Oscar', 'Wilde', 'id5', 'Page not yet added', 1891, 20, 65105)
 
 
 
